@@ -12,8 +12,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:setup": "prisma migrate deploy && prisma db seed",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:init": "prisma migrate deploy && prisma db seed"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",

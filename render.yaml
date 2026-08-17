@@ -8,9 +8,11 @@ services:
     plan: free
     region: oregon
     branch: main
-    # --include=dev : Tailwind et TypeScript sont nécessaires à la construction,
-    # même quand l'hébergeur installe en mode production.
-    buildCommand: npm ci --include=dev && npx prisma migrate deploy && npm run build
+    # --include=dev : Tailwind et TypeScript sont nécessaires à la construction.
+    # db:init applique les migrations puis charge les données de départ la
+    # première fois seulement : le forfait gratuit n'a pas de Shell pour le
+    # faire à la main.
+    buildCommand: npm ci --include=dev && npm run db:init && npm run build
     startCommand: npm run start
     healthCheckPath: /
     envVars:

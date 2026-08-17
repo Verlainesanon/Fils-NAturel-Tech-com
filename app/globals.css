@@ -355,6 +355,25 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink-3); }
 input::placeholder, textarea::placeholder { color: var(--ink-3); }
 select option { background: var(--bone); color: var(--ink); }
 
+/* Mot de passe : le bouton œil se pose dans le champ, sans le rétrécir. */
+.champ-mdp { position: relative; display: flex; }
+.champ-mdp input { padding-right: 3rem; }
+.champ-mdp button {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 99px;
+  color: var(--ink-3);
+  transition: color 0.2s, background 0.2s;
+}
+.champ-mdp button:hover { color: var(--ink); background: var(--bone-3); }
+.champ-mdp button[aria-pressed="true"] { color: var(--sig); }
+
 .formulaire { display: flex; flex-direction: column; gap: 1.1rem; }
 .paire-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .bloc-formulaire { padding: clamp(1.5rem, 3vw, 2.2rem); }

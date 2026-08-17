@@ -245,6 +245,14 @@ const PRODUITS: ProduitSeed[] = [
 ]
 
 async function main() {
+  // Le seed tourne à chaque déploiement : sans ce garde-fou, il ressusciterait
+  // les produits d'exemple supprimés. FORCE_SEED=1 permet de le forcer.
+  const dejaInitialisee = (await prisma.adminUser.count()) > 0
+  if (dejaInitialisee && process.env.FORCE_SEED !== '1') {
+    console.log('Base déjà initialisée : rien à faire.')
+    return
+  }
+
   for (const categorie of CATEGORIES) {
     await prisma.category.upsert({
       where: { slug: categorie.slug },

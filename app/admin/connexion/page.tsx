@@ -5,6 +5,7 @@ import { adminActuel } from '@/lib/auth'
 import { lireReglages } from '@/lib/settings'
 import { connexionAdmin } from '../actions'
 import FormulaireAdmin from '@/components/admin/FormulaireAdmin'
+import ChampMotDePasse from '@/components/ChampMotDePasse'
 
 export const metadata: Metadata = { title: 'Administration' }
 
@@ -30,16 +31,7 @@ export default async function ConnexionAdmin() {
             <label htmlFor="identifiant">Identifiant</label>
             <input id="identifiant" name="identifiant" required autoComplete="username" autoFocus />
           </div>
-          <div className="champ">
-            <label htmlFor="motDePasse">Mot de passe</label>
-            <input
-              id="motDePasse"
-              name="motDePasse"
-              type="password"
-              required
-              autoComplete="current-password"
-            />
-          </div>
+          <ChampMotDePasse />
           <button className="btn btn-solid" type="submit">
             Entrer
           </button>

@@ -11,7 +11,7 @@ dans un fichier `.env` (modèle dans `.env.example`), puis :
 
 ```bash
 npm install          # une seule fois
-npm run db:setup     # crée les tables et les données de départ
+npm run db:init      # crée les tables et les données de départ
 npm run dev          # démarre le site
 ```
 
@@ -71,7 +71,7 @@ npm run dev        # site en développement
 npm run build      # construire la version de production
 npm run start      # lancer la version construite
 npm test           # tests automatisés
-npm run db:setup   # réinitialiser la base avec les données de départ
+npm run db:init    # créer les tables et charger les données de départ
 npm run db:studio  # explorer la base dans le navigateur
 ```
 

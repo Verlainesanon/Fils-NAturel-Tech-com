@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import ChampMotDePasse from '@/components/ChampMotDePasse'
 
 type Props = {
   mode: 'connexion' | 'inscription'
@@ -42,18 +43,11 @@ export default function FormulaireCompte({ mode, action }: Props) {
         </div>
       )}
 
-      <div className="champ">
-        <label htmlFor="motDePasse">Mot de passe</label>
-        <input
-          id="motDePasse"
-          name="motDePasse"
-          type="password"
-          required
-          minLength={inscription ? 8 : undefined}
-          autoComplete={inscription ? 'new-password' : 'current-password'}
-        />
-        {inscription && <span className="mono">8 caractères minimum.</span>}
-      </div>
+      <ChampMotDePasse
+        minLength={inscription ? 8 : undefined}
+        autoComplete={inscription ? 'new-password' : 'current-password'}
+        aide={inscription ? '8 caractères minimum.' : undefined}
+      />
 
       {erreur && <p className="message-erreur">{erreur}</p>}
 

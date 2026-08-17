@@ -6,6 +6,7 @@ import { peut, ROLES, LIBELLES_ROLES } from '@/lib/roles'
 import { formaterDateHeure } from '@/lib/format'
 import { creerAdmin, changerRoleAdmin, changerMotDePasseAdmin, supprimerAdmin } from '@/app/admin/actions'
 import FormulaireAdmin from '@/components/admin/FormulaireAdmin'
+import ChampMotDePasse from '@/components/ChampMotDePasse'
 
 export const metadata: Metadata = { title: 'Comptes admin' }
 
@@ -66,11 +67,12 @@ export default async function Comptes() {
                 <td>
                   <FormulaireAdmin action={changerMotDePasseAdmin} className="ligne-ajustement">
                     <input type="hidden" name="id" value={c.id} />
-                    <input
-                      name="motDePasse"
-                      type="password"
+                    <ChampMotDePasse
+                      compact
+                      required={false}
+                      autoComplete="new-password"
                       placeholder="12 caractères min."
-                      aria-label={`Nouveau mot de passe de ${c.identifiant}`}
+                      label={`Nouveau mot de passe de ${c.identifiant}`}
                     />
                     <button className="bouton-mini" type="submit">
                       Réinitialiser
@@ -118,18 +120,7 @@ export default async function Comptes() {
           </select>
         </div>
 
-        <div className="champ">
-          <label htmlFor="motDePasse">Mot de passe</label>
-          <input
-            id="motDePasse"
-            name="motDePasse"
-            type="password"
-            minLength={12}
-            required
-            autoComplete="new-password"
-          />
-          <span className="mono">12 caractères minimum.</span>
-        </div>
+        <ChampMotDePasse minLength={12} autoComplete="new-password" aide="12 caractères minimum." />
 
         <div className="pied-formulaire">
           <button className="btn btn-solid" type="submit">

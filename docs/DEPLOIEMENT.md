@@ -39,22 +39,19 @@ automatiquement, et `SESSION_SECRET` est généré par Render.
 
 ---
 
-## 3. Remplir la base la première fois
+## 3. Remplir la base : c’est automatique
 
-La base est créée vide. Une seule fois, après le premier déploiement :
+Le forfait gratuit de Render ne donne pas accès au Shell. L’initialisation se fait donc
+toute seule **pendant la construction** : la commande de build applique les migrations
+puis charge les données de départ (4 catégories, 12 produits d’exemple, code promo
+`FNTC10`, compte administrateur).
 
-1. Dans Render, ouvrez le service `fntc` → onglet **Shell**.
-2. Tapez :
+Ce chargement ne s’exécute **qu’une fois** : dès qu’un compte administrateur existe, les
+déploiements suivants passent leur chemin. Vos produits ne seront jamais écrasés, et les
+produits d’exemple que vous supprimez ne reviennent pas.
 
-```bash
-npm run db:seed
-```
-
-Cela crée les 4 catégories, les 12 produits d’exemple, le code promo `FNTC10` et le
-compte administrateur.
-
-> Ne relancez pas cette commande plus tard : elle recréerait les produits d’exemple que
-> vous auriez supprimés.
+Pour forcer un rechargement malgré tout, ajoutez temporairement la variable
+`FORCE_SEED` = `1` dans *Environment*, redéployez, puis retirez-la.
 
 ---
 
@@ -106,7 +103,29 @@ et utilisez son URL dans votre `.env`.
 
 ---
 
-## 7. Un nom de domaine à vous (facultatif)
+## 7. Agir sur la base sans le Shell
+
+Le forfait gratuit n’a pas de Shell, mais la base reste joignable depuis votre
+ordinateur :
+
+1. Dans Render, ouvrez `fntc-db` → **Connect** → copiez la **PSQL Command** : elle
+   contient déjà l’adresse externe et le mot de passe.
+2. Collez-la dans un terminal. Vous obtenez une invite `fntc=>`.
+3. Vous pouvez alors taper du SQL, par exemple pour lister vos comptes administrateurs :
+
+```sql
+SELECT identifiant, role, "derniereConnexion" FROM "AdminUser";
+```
+
+`psql` vient avec PostgreSQL : https://www.postgresql.org/download/windows/
+
+Plus simple encore, sans rien installer de plus : mettez l’**External Database URL** dans
+votre `.env` local, puis utilisez les commandes du projet — `npm run db:init` pour
+initialiser, `npm run db:studio` pour ouvrir une interface graphique sur vos données.
+
+---
+
+## 8. Un nom de domaine à vous (facultatif)
 
 Achetez un domaine, puis dans Render : service `fntc` → **Settings → Custom Domains →
 Add**. Render affiche les lignes à recopier chez votre vendeur de domaine. Le certificat
@@ -114,7 +133,7 @@ de sécurité est automatique.
 
 ---
 
-## 8. Brancher le paiement par carte (plus tard)
+## 9. Brancher le paiement par carte (plus tard)
 
 1. Compte sur https://stripe.com, vérification d’identité, puis *Développeurs → Clés API*.
 2. Dans Render : service `fntc` → **Environment** → ajoutez `STRIPE_SECRET_KEY` et
@@ -131,7 +150,7 @@ virement.
 | Symptôme | Cause la plus fréquente |
 |---|---|
 | Le déploiement échoue | Ouvrez l’onglet *Logs* de Render, lisez la dernière ligne rouge |
-| Page d’erreur 500 | La base n’a pas été remplie : lancez `npm run db:seed` (étape 3) |
+| Page d’erreur 500 | La base n’est pas branchée : vérifiez `DATABASE_URL` dans *Environment* |
 | « Session expirée » en boucle | `SESSION_SECRET` a changé entre deux déploiements |
 | Le site met 40 secondes à s’ouvrir | Forfait gratuit : le service dormait, c’est normal |
 | Les produits ont disparu | La base gratuite a expiré (30 jours) |
