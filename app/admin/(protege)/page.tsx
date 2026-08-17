@@ -59,8 +59,11 @@ export default async function TableauDeBord() {
           <Link className="btn btn-line" href="/" target="_blank">
             Voir le site
           </Link>
-          <Link className="btn btn-solid" href="/admin/produits/nouveau">
+          <Link className="btn btn-line" href="/admin/produits/nouveau">
             Ajouter un produit
+          </Link>
+          <Link className="btn btn-sig" href="/admin/commandes/nouvelle">
+            Saisir une commande
           </Link>
         </div>
       </header>

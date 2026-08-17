@@ -41,6 +41,9 @@ export default async function Commandes({
           <h1>Commandes</h1>
           <p>{commandes.length} commande(s) affichée(s).</p>
         </div>
+        <Link className="btn btn-sig" href="/admin/commandes/nouvelle">
+          Saisir une commande
+        </Link>
       </header>
 
       <form className="filtres-admin" action="/admin/commandes">

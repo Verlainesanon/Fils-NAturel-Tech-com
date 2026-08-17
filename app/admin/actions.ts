@@ -6,9 +6,11 @@ import { prisma } from '@/lib/db'
 import { connecterAdmin, deconnecterAdmin, exigerRole, hacherMotDePasse } from '@/lib/auth'
 import { journaliser } from '@/lib/audit'
 import { ecrireReglages, type Reglages } from '@/lib/settings'
-import { slugifier } from '@/lib/format'
+import { randomBytes } from 'node:crypto'
+import { slugifier, prixEffectif } from '@/lib/format'
 import { estRole } from '@/lib/roles'
-import { DEVISES_DEFAUT } from '@/lib/devises'
+import { DEVISES_DEFAUT, lireDevises, deviseDeBase } from '@/lib/devises'
+import { resoudreStock, totalLignes } from '@/lib/stock'
 
 const texte = (f: FormData, cle: string) => String(f.get(cle) ?? '').trim()
 const nombre = (f: FormData, cle: string, defaut = 0) => {
@@ -178,14 +180,17 @@ export async function supprimerCategorie(id: string) {
 export async function ajusterStock(formData: FormData) {
   const admin = await exigerRole('vendeur')
   const produitId = texte(formData, 'produitId')
-  const variation = nombre(formData, 'variation')
   const motif = texte(formData, 'motif') || 'correction'
-  if (variation === 0) return { erreur: 'Indiquez une quantité différente de zéro.' }
+  // Deux façons de saisir : la quantité finale, ou l'écart à appliquer.
+  const mode = texte(formData, 'mode') === 'definir' ? 'definir' : 'variation'
+  const saisie = nombre(formData, 'quantite')
 
   const produit = await prisma.product.findUnique({ where: { id: produitId } })
   if (!produit) return { erreur: 'Produit introuvable.' }
 
-  const stockApres = Math.max(0, produit.stock + variation)
+  const resultat = resoudreStock(produit.stock, mode, saisie)
+  if ('erreur' in resultat) return resultat
+  const { stockApres } = resultat
   await prisma.product.update({ where: { id: produitId }, data: { stock: stockApres } })
   await prisma.stockMovement.create({
     data: {
@@ -197,7 +202,8 @@ export async function ajusterStock(formData: FormData) {
       auteur: admin.nom,
     },
   })
-  await journaliser(admin.nom, 'stock', `Product#${produitId}`, `${variation > 0 ? '+' : ''}${variation} (${motif})`)
+  const ecart = stockApres - produit.stock
+  await journaliser(admin.nom, 'stock', `Product#${produitId}`, `${ecart > 0 ? '+' : ''}${ecart} (${motif})`)
   revalidatePath('/admin/stock')
   revalidatePath('/boutique')
 }
@@ -253,6 +259,129 @@ const LIBELLES_TRAITEMENT: Record<string, string> = {
   expediee: 'Commande expédiée',
   livree: 'Commande livrée',
   annulee: 'Commande annulée',
+}
+
+/**
+ * Commande saisie par l'équipe : vente au comptoir, au téléphone ou par
+ * message. Même effet qu'une commande du site — stock décrémenté, mouvement
+ * tracé — mais l'auteur est l'administrateur, et la vente a déjà eu lieu.
+ */
+export async function creerCommandeAdmin(formData: FormData) {
+  const admin = await exigerRole('vendeur')
+
+  let lignesDemandees: { produitId: string; quantite: number }[] = []
+  try {
+    const analyse = JSON.parse(texte(formData, 'lignes') || '[]')
+    if (Array.isArray(analyse)) lignesDemandees = analyse
+  } catch {
+    return { erreur: 'Lignes de commande illisibles.' }
+  }
+  lignesDemandees = lignesDemandees.filter((l) => l?.produitId && l.quantite > 0)
+  if (lignesDemandees.length === 0) return { erreur: 'Ajoutez au moins un article.' }
+
+  const nom = texte(formData, 'nom')
+  const email = texte(formData, 'email').toLowerCase()
+  const ville = texte(formData, 'ville')
+  const adresse = texte(formData, 'adresse')
+  if (nom.length < 2) return { erreur: 'Indiquez le nom du client.' }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { erreur: 'Cette adresse email n’est pas valide.' }
+  if (!ville || !adresse) return { erreur: 'Indiquez l’adresse et la ville de livraison.' }
+
+  const produits = await prisma.product.findMany({
+    where: { id: { in: lignesDemandees.map((l) => l.produitId) } },
+  })
+
+  const lignes: {
+    produitId: string
+    nomProduit: string
+    referenceProduit: string | null
+    prixCentimes: number
+    quantite: number
+  }[] = []
+  for (const demande of lignesDemandees) {
+    const produit = produits.find((p) => p.id === demande.produitId)
+    if (!produit) return { erreur: 'Un article de la commande n’existe plus.' }
+    if (produit.stock < demande.quantite) {
+      return { erreur: `Stock insuffisant pour « ${produit.nom} » : ${produit.stock} disponible(s).` }
+    }
+    const { centimes } = prixEffectif(produit)
+    lignes.push({
+      produitId: produit.id,
+      nomProduit: produit.nom,
+      referenceProduit: produit.reference,
+      prixCentimes: centimes,
+      quantite: demande.quantite,
+    })
+  }
+
+  const sousTotal = totalLignes(lignes)
+  const livraison = centimes(formData, 'livraison')
+  const statutPaiement = texte(formData, 'statutPaiement') || 'payee'
+  const modePaiement = texte(formData, 'modePaiement') || 'especes'
+
+  // Client existant si l'identifiant est fourni, sinon fiche créée au passage.
+  let clientId = texte(formData, 'clientId') || null
+  if (!clientId) {
+    const existant = await prisma.customer.findUnique({ where: { email } })
+    clientId = existant
+      ? existant.id
+      : (await prisma.customer.create({ data: { nom, email, telephone: texte(formData, 'telephone') || null } })).id
+  }
+
+  const numero = `FN-${new Date().toISOString().slice(2, 10).replace(/-/g, '')}-${randomBytes(2)
+    .toString('hex')
+    .toUpperCase()}`
+  const devise = deviseDeBase(await lireDevises())
+
+  const commande = await prisma.$transaction(async (tx) => {
+    const creee = await tx.order.create({
+      data: {
+        numero,
+        jetonInvite: randomBytes(16).toString('hex'),
+        clientId,
+        emailContact: email,
+        nomContact: nom,
+        telContact: texte(formData, 'telephone') || null,
+        adresseTexte: adresse,
+        villeLivraison: ville,
+        sousTotalCentimes: sousTotal,
+        livraisonCentimes: livraison,
+        totalCentimes: sousTotal + livraison,
+        deviseCode: devise.code,
+        tauxApplique: devise.taux,
+        statutPaiement,
+        modePaiement,
+        statutTraitement: 'nouvelle',
+        noteInterne: texte(formData, 'noteInterne') || null,
+        lignes: { create: lignes },
+        evenements: { create: { libelle: `Commande saisie par ${admin.nom}`, auteur: admin.nom } },
+      },
+    })
+
+    for (const ligne of lignes) {
+      const produit = await tx.product.update({
+        where: { id: ligne.produitId },
+        data: { stock: { decrement: ligne.quantite } },
+      })
+      await tx.stockMovement.create({
+        data: {
+          produitId: ligne.produitId,
+          variation: -ligne.quantite,
+          stockApres: produit.stock,
+          motif: 'vente',
+          note: `Commande ${numero} (saisie admin)`,
+          auteur: admin.nom,
+        },
+      })
+    }
+
+    return creee
+  })
+
+  await journaliser(admin.nom, 'creation', `Order#${commande.id}`, `${numero}, ${lignes.length} ligne(s)`)
+  revalidatePath('/admin/commandes')
+  revalidatePath('/boutique')
+  redirect(`/admin/commandes/${commande.id}`)
 }
 
 export async function changerStatutCommande(formData: FormData) {

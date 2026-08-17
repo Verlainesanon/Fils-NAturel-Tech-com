@@ -4,6 +4,7 @@ import { peut } from '@/lib/roles'
 import { verifierMotDePasse, hacherMotDePasse } from '@/lib/auth'
 import { convertir, formaterMontant } from '@/lib/devises'
 import { traduire } from '@/lib/i18n'
+import { resoudreStock, totalLignes } from '@/lib/stock'
 
 const base = { prixCentimes: 10000, promoCentimes: null, promoDebut: null, promoFin: null }
 
@@ -107,5 +108,43 @@ describe('traduction', () => {
   it('retombe sur le français quand la traduction manque', () => {
     expect(traduire('en', 'panier.lunite')).toBe('each')
     expect(traduire('ht', 'cle.inexistante')).toBe('cle.inexistante')
+  })
+})
+
+describe('saisie du stock', () => {
+  it('remplace le stock en mode « nouvelle quantité »', () => {
+    expect(resoudreStock(12, 'definir', 45)).toEqual({ stockApres: 45, ecart: 33 })
+    expect(resoudreStock(50, 'definir', 8)).toEqual({ stockApres: 8, ecart: -42 })
+  })
+
+  it('ajoute ou retire en mode « variation »', () => {
+    expect(resoudreStock(12, 'variation', 8)).toEqual({ stockApres: 20, ecart: 8 })
+    expect(resoudreStock(12, 'variation', -5)).toEqual({ stockApres: 7, ecart: -5 })
+  })
+
+  it('ne descend jamais sous zéro', () => {
+    expect(resoudreStock(3, 'variation', -10)).toEqual({ stockApres: 0, ecart: -3 })
+  })
+
+  it('refuse une saisie qui ne change rien ou qui est absurde', () => {
+    expect(resoudreStock(12, 'definir', 12)).toEqual({ erreur: 'Le stock est déjà à cette valeur.' })
+    expect(resoudreStock(12, 'variation', 0)).toEqual({ erreur: 'Indiquez une quantité différente de zéro.' })
+    expect(resoudreStock(12, 'definir', -1)).toEqual({ erreur: 'La quantité ne peut pas être négative.' })
+    expect(resoudreStock(0, 'variation', -3)).toEqual({ erreur: 'Le stock est déjà à cette valeur.' })
+  })
+})
+
+describe('lignes de commande', () => {
+  it('totalise prix multiplié par quantité', () => {
+    expect(
+      totalLignes([
+        { prixCentimes: 9900, quantite: 2 },
+        { prixCentimes: 3400, quantite: 3 },
+      ])
+    ).toBe(30000)
+  })
+
+  it('vaut zéro sans ligne', () => {
+    expect(totalLignes([])).toBe(0)
   })
 })

@@ -267,6 +267,34 @@ table.admin-tableau { width: 100%; border-collapse: collapse; font-size: 0.88rem
 
 .paire-caracteristique { display: grid; grid-template-columns: 1fr 1.3fr auto; gap: 0.5rem; margin-bottom: 0.5rem; }
 
+/* La saisie de commande a besoin d'un panneau plus large que les autres
+   pages à deux colonnes : les noms d'articles y tiennent sur une ligne. */
+.saisie-commande { grid-template-columns: 1.15fr 1fr; }
+
+/* Lignes d'une commande en cours de saisie. */
+.lignes-saisie { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.ligne-saisie {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.5rem auto auto;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--r-s);
+  background: var(--bone);
+}
+
+.ligne-saisie input { width: 100%; text-align: center; padding: 0.45rem; }
+
+@media (max-width: 1000px) {
+  .saisie-commande { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .ligne-saisie { grid-template-columns: minmax(0, 1fr) auto; }
+  .ligne-saisie input { grid-column: 1; }
+}
+
 /* ------------------------------------------------------------------ images */
 
 .grille-images { grid-column: 1 / -1; display: flex; gap: 0.6rem; flex-wrap: wrap; }
