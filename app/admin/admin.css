@@ -1,0 +1,539 @@
+/* Interface d'administration. Même palette que la vitrine, mais densité de
+   tableau de bord : moins d'air, plus d'information par écran. */
+
+.admin {
+  display: grid;
+  grid-template-columns: 15.5rem 1fr;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-barre {
+  border-right: 1px solid var(--trait);
+  background: rgba(20, 13, 15, 0.75);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.2rem 0.9rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-marque {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-bottom: 1rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--trait);
+}
+
+.admin-marque img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--rayon);
+  border: 1px solid var(--trait-fort);
+  object-fit: cover;
+}
+
+.admin-marque strong {
+  font-size: 0.9rem;
+  line-height: 1.15;
+}
+
+.admin-groupe {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0.9rem 0.6rem 0.3rem;
+}
+
+.admin-lien {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--rayon);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  border-left: 2px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.admin-lien:hover {
+  background: rgba(247, 241, 232, 0.05);
+  color: var(--ink);
+}
+
+.admin-lien.actif {
+  color: var(--gold-lit);
+  border-left-color: var(--gold);
+  background: linear-gradient(90deg, rgba(126, 93, 28, 0.28), transparent);
+}
+
+.admin-pastille {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: var(--red);
+  color: var(--ink);
+}
+
+.admin-corps {
+  padding: 1.6rem 2rem 4rem;
+  min-width: 0;
+}
+
+.admin-entete {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.6rem;
+  border-bottom: 1px solid var(--trait);
+}
+
+.admin-entete h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.admin-entete p {
+  margin: 0.35rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-utilisateur {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--trait);
+  font-size: 0.82rem;
+}
+
+/* ------------------------------------------------------------- indicateurs */
+
+.grille-indicateurs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px;
+  background: var(--trait);
+  border: 1px solid var(--trait);
+  margin-bottom: 1.8rem;
+}
+
+.indicateur {
+  background: var(--void);
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.indicateur .valeur {
+  font-size: 1.7rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: var(--gold-lit);
+}
+
+.indicateur .mono {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.alerte {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(196, 30, 39, 0.45);
+  border-left-width: 3px;
+  border-radius: var(--rayon);
+  background: rgba(94, 10, 14, 0.25);
+  font-size: 0.88rem;
+  margin-bottom: 0.6rem;
+}
+
+.alerte-or {
+  border-color: var(--gold-deep);
+  background: rgba(126, 93, 28, 0.2);
+}
+
+/* ---------------------------------------------------------------- tableaux */
+
+.cadre-tableau {
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  overflow-x: auto;
+}
+
+table.admin-tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  min-width: 640px;
+}
+
+.admin-tableau th {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  font-weight: 400;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--trait);
+  background: rgba(20, 13, 15, 0.6);
+  white-space: nowrap;
+}
+
+.admin-tableau td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--trait);
+  vertical-align: middle;
+}
+
+.admin-tableau tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-tableau tbody tr:hover {
+  background: rgba(247, 241, 232, 0.035);
+}
+
+.admin-tableau .colonne-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vignette-tableau {
+  width: 2.6rem;
+  height: 2.6rem;
+  object-fit: cover;
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+}
+
+.bouton-mini {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  background: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.bouton-mini:hover {
+  color: var(--gold);
+  border-color: var(--trait-fort);
+}
+
+.bouton-mini.danger:hover {
+  color: var(--red-lit);
+  border-color: rgba(244, 71, 79, 0.6);
+}
+
+/* ------------------------------------------------------------------ états */
+
+.etat {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--trait);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.etat-nouvelle, .etat-en_attente, .etat-ouvert {
+  color: var(--red-lit);
+  border-color: rgba(244, 71, 79, 0.5);
+}
+
+.etat-preparee, .etat-expediee {
+  color: var(--gold);
+  border-color: var(--gold-deep);
+}
+
+.etat-livree, .etat-payee, .etat-resolu, .etat-publie {
+  color: #7fc79b;
+  border-color: rgba(127, 199, 155, 0.45);
+}
+
+.etat-annulee, .etat-echouee, .etat-archive {
+  color: var(--ink-dim);
+}
+
+/* ------------------------------------------------------------ formulaires */
+
+.admin-formulaire {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  padding: 1.4rem;
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  background: linear-gradient(160deg, var(--panel-haut), var(--panel));
+}
+
+.admin-formulaire .large {
+  grid-column: 1 / -1;
+}
+
+.admin-formulaire h2 {
+  grid-column: 1 / -1;
+  margin: 0.4rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--trait);
+}
+
+.admin-formulaire h2:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.pied-formulaire {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--trait);
+  flex-wrap: wrap;
+}
+
+.case-a-cocher {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.case-a-cocher input {
+  width: auto;
+  accent-color: var(--gold);
+}
+
+.deux-colonnes {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.4rem;
+  align-items: start;
+}
+
+.filtres-admin {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.1rem;
+}
+
+.filtres-admin input,
+.filtres-admin select {
+  width: auto;
+  min-width: 12rem;
+}
+
+/* --------------------------------------------------------------- images */
+
+.grille-images {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.image-choisie {
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+
+.image-choisie img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-choisie button {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.2rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  border: none;
+  background: rgba(8, 5, 6, 0.85);
+  color: var(--ink);
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------ messagerie */
+
+.grille-messagerie {
+  display: grid;
+  grid-template-columns: 20rem 1fr;
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.liste-conversations {
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  overflow: hidden;
+}
+
+.item-conversation {
+  display: block;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--trait);
+  transition: background 0.15s ease;
+}
+
+.item-conversation:last-child {
+  border-bottom: none;
+}
+
+.item-conversation:hover,
+.item-conversation.actif {
+  background: rgba(247, 241, 232, 0.05);
+}
+
+.item-conversation strong {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.fil-admin {
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-height: 32rem;
+  overflow-y: auto;
+}
+
+.connexion-admin {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.carte-connexion {
+  width: min(24rem, 100%);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (max-width: 1000px) {
+  .admin {
+    grid-template-columns: 1fr;
+  }
+  .admin-barre {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid var(--trait);
+  }
+  .admin-groupe {
+    display: none;
+  }
+  .admin-utilisateur {
+    margin-left: auto;
+    border-top: none;
+    padding-top: 0;
+  }
+  .deux-colonnes,
+  .grille-messagerie {
+    grid-template-columns: 1fr;
+  }
+  .admin-corps {
+    padding: 1.2rem 1rem 3rem;
+  }
+}
+
+/* Formulaires en ligne dans les tableaux : ils ne doivent pas casser la ligne. */
+.ligne-action {
+  display: inline-block;
+}
+
+.ligne-ajustement {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ligne-ajustement input,
+.ligne-ajustement select {
+  width: auto;
+  min-width: 6rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.82rem;
+}
+
+.paire-caracteristique {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr auto;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-corps .message-erreur {
+  margin-top: 0.5rem;
+}
+
+.admin-corps .admin-formulaire + .admin-formulaire {
+  margin-top: 1rem;
+}

@@ -1,0 +1,292 @@
+// Schéma FNTC. SQLite en développement : pas d'enum ni de tableau natif,
+// les valeurs contraintes sont des String documentées et les listes du JSON.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------- Catalogue
+
+model Category {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  nom         String
+  description String?
+  image       String?
+  ordre       Int        @default(0)
+  visible     Boolean    @default(true)
+  parentId    String?
+  parent      Category?  @relation("SousCategories", fields: [parentId], references: [id])
+  enfants     Category[] @relation("SousCategories")
+  produits    Product[]
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  nom              String
+  reference        String?
+  marque           String?
+  descriptionCourte String  @default("")
+  description      String
+  prixCentimes     Int
+  promoCentimes    Int?
+  promoDebut       DateTime?
+  promoFin         DateTime?
+  stock            Int      @default(0)
+  seuilAlerte      Int      @default(3)
+  poidsGrammes     Int?
+  images           String   @default("[]") // JSON : tableau de data URL
+  caracteristiques String   @default("[]") // JSON : [{ cle, valeur }]
+  statut           String   @default("publie") // brouillon | publie | archive
+  miseEnAvant      Boolean  @default(false)
+  seoTitre         String?
+  seoDescription   String?
+  categorieId      String
+  categorie        Category @relation(fields: [categorieId], references: [id])
+  lignes           OrderItem[]
+  mouvements       StockMovement[]
+  creeLe           DateTime @default(now())
+  majLe            DateTime @updatedAt
+  supprimeLe       DateTime?
+
+  @@index([categorieId])
+  @@index([statut])
+}
+
+model StockMovement {
+  id        String   @id @default(cuid())
+  produitId String
+  produit   Product  @relation(fields: [produitId], references: [id])
+  variation Int      // positif = entrée, négatif = sortie
+  stockApres Int
+  motif     String   // reception | casse | inventaire | correction | vente | annulation
+  note      String?
+  auteur    String?  // nom de l'admin, null si automatique
+  creeLe    DateTime @default(now())
+
+  @@index([produitId])
+}
+
+model Promo {
+  id                String   @id @default(cuid())
+  code              String   @unique
+  type              String   // pourcentage | montant | livraison
+  valeur            Int      // pourcentage entier, ou centimes
+  portee            String   @default("tout") // tout | categorie | produits
+  cibleIds          String   @default("[]")   // JSON : ids catégories ou produits
+  minimumCentimes   Int      @default(0)
+  debut             DateTime?
+  fin               DateTime?
+  usagesMax         Int?
+  usagesMaxParClient Int?
+  usages            Int      @default(0)
+  actif             Boolean  @default(true)
+  commandes         Order[]
+  creeLe            DateTime @default(now())
+}
+
+// ------------------------------------------------------------------ Clients
+
+model Customer {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  nom           String
+  telephone     String?
+  motDePasse    String?   // null = client invité, jamais connecté
+  badge         String    @default("aucun") // aucun | bronze | argent | or
+  notesInternes String?
+  adresses      Address[]
+  commandes     Order[]
+  conversations Conversation[]
+  creeLe        DateTime  @default(now())
+  supprimeLe    DateTime?
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  clientId   String
+  client     Customer @relation(fields: [clientId], references: [id])
+  ligne1     String
+  ligne2     String?
+  ville      String
+  region     String?
+  codePostal String?
+  pays       String   @default("Haïti")
+  parDefaut  Boolean  @default(false)
+
+  @@index([clientId])
+}
+
+// ----------------------------------------------------------------- Commandes
+
+model Order {
+  id             String      @id @default(cuid())
+  numero         String      @unique
+  clientId       String?
+  client         Customer?   @relation(fields: [clientId], references: [id])
+  emailContact   String
+  nomContact     String
+  telContact     String?
+  adresseTexte   String
+  villeLivraison String
+  sousTotalCentimes Int
+  remiseCentimes    Int      @default(0)
+  livraisonCentimes Int      @default(0)
+  totalCentimes     Int
+  promoId        String?
+  promo          Promo?      @relation(fields: [promoId], references: [id])
+  statutPaiement String      @default("en_attente") // en_attente | payee | echouee | remboursee
+  modePaiement   String      @default("hors_ligne") // hors_ligne | especes | virement | carte
+  statutTraitement String    @default("nouvelle")   // nouvelle | preparee | expediee | livree | annulee
+  suivi          String?
+  noteInterne    String?
+  jetonInvite    String      @unique // permet à un invité de retrouver sa commande
+  lignes         OrderItem[]
+  evenements     OrderEvent[]
+  creeLe         DateTime    @default(now())
+  majLe          DateTime    @updatedAt
+
+  @@index([clientId])
+  @@index([statutTraitement])
+}
+
+model OrderItem {
+  id             String  @id @default(cuid())
+  commandeId     String
+  commande       Order   @relation(fields: [commandeId], references: [id], onDelete: Cascade)
+  produitId      String?
+  produit        Product? @relation(fields: [produitId], references: [id])
+  nomProduit     String  // figé au moment de l'achat
+  referenceProduit String?
+  prixCentimes   Int     // figé au moment de l'achat
+  quantite       Int
+
+  @@index([commandeId])
+}
+
+model OrderEvent {
+  id         String   @id @default(cuid())
+  commandeId String
+  commande   Order    @relation(fields: [commandeId], references: [id], onDelete: Cascade)
+  libelle    String
+  auteur     String?
+  creeLe     DateTime @default(now())
+
+  @@index([commandeId])
+}
+
+// --------------------------------------------------------------- Messagerie
+
+model Conversation {
+  id         String    @id @default(cuid())
+  jeton      String    @unique // cookie côté visiteur, permet le chat sans compte
+  clientId   String?
+  client     Customer? @relation(fields: [clientId], references: [id])
+  nomVisiteur String   @default("Visiteur")
+  emailVisiteur String?
+  statut     String    @default("ouvert") // ouvert | en_attente | resolu
+  assigneA   String?
+  messages   Message[]
+  creeLe     DateTime  @default(now())
+  majLe      DateTime  @updatedAt
+
+  @@index([statut])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  auteur         String       // client | admin
+  nomAuteur      String
+  corps          String
+  luParAdmin     Boolean      @default(false)
+  luParClient    Boolean      @default(false)
+  creeLe         DateTime     @default(now())
+
+  @@index([conversationId])
+}
+
+// ------------------------------------------------------------------ Contenu
+
+model ContentBlock {
+  id        String   @id @default(cuid())
+  cle       String   @unique // ex : accueil.hero.titre
+  zone      String   // accueil | apropos | pied | ...
+  type      String   // texte | titre | image | image_legende | citation | bouton
+  valeur    String   @default("")
+  valeurAlt String?  // légende, lien du bouton…
+  ordre     Int      @default(0)
+  statut    String   @default("publie") // brouillon | publie
+  majLe     DateTime @updatedAt
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  nom       String
+  donnees   String   // data URL
+  alt       String   @default("")
+  tailleKo  Int      @default(0)
+  creeLe    DateTime @default(now())
+}
+
+model Banner {
+  id       String    @id @default(cuid())
+  texte    String
+  lien     String?
+  couleur  String    @default("rouge") // rouge | or | sombre
+  debut    DateTime?
+  fin      DateTime?
+  actif    Boolean   @default(true)
+  ordre    Int       @default(0)
+}
+
+model Setting {
+  cle    String @id
+  valeur String @default("")
+}
+
+// ----------------------------------------------------------- Administration
+
+model AdminUser {
+  id            String    @id @default(cuid())
+  identifiant   String    @unique
+  nom           String
+  motDePasse    String
+  role          String    @default("viewer") // viewer | vendeur | gestionnaire | proprietaire
+  actif         Boolean   @default(true)
+  echecs        Int       @default(0)
+  bloqueJusqua  DateTime?
+  derniereConnexion DateTime?
+  sessions      AdminSession[]
+  creeLe        DateTime  @default(now())
+}
+
+model AdminSession {
+  id        String    @id @default(cuid())
+  jeton     String    @unique
+  adminId   String
+  admin     AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  expireLe  DateTime
+  creeLe    DateTime  @default(now())
+
+  @@index([adminId])
+}
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  auteur   String
+  action   String   // creation | modification | suppression | connexion | ...
+  cible    String   // ex : Product#abc123
+  details  String   @default("")
+  ip       String?
+  creeLe   DateTime @default(now())
+
+  @@index([creeLe])
+}
