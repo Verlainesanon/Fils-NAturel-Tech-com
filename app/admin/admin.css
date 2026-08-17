@@ -1,5 +1,24 @@
-/* Interface d'administration. Même palette que la vitrine, mais densité de
-   tableau de bord : moins d'air, plus d'information par écran. */
+/* Interface d'administration. Elle reprend les jetons de la vitrine : fond
+   sombre "deep" pour se distinguer de la boutique, mêmes rouges et ambres. */
+
+.admin, .connexion-admin {
+  --void: var(--deep);
+  --panel: var(--deep-2);
+  --panel-haut: #35201d;
+  --ink: var(--on-deep);
+  --ink-soft: var(--on-deep-2);
+  --ink-dim: #8b7a71;
+  --red: var(--sig);
+  --red-lit: var(--sig-2);
+  --gold: var(--amb);
+  --gold-lit: #f7dc9a;
+  --gold-deep: #6d5116;
+  --trait: rgba(240, 235, 227, 0.14);
+  --trait-fort: rgba(232, 179, 58, 0.4);
+  --rayon: 14px;
+  background: var(--deep);
+  color: var(--on-deep);
+}
 
 .admin {
   display: grid;

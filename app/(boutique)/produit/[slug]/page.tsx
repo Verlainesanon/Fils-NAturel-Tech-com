@@ -37,20 +37,15 @@ export default async function FicheProduit({ params }: { params: { slug: string 
   const stockBas = !rupture && produit.stock <= produit.seuilAlerte
 
   const similaires = await prisma.product.findMany({
-    where: {
-      categorieId: produit.categorieId,
-      id: { not: produit.id },
-      statut: 'publie',
-      supprimeLe: null,
-    },
+    where: { categorieId: produit.categorieId, id: { not: produit.id }, statut: 'publie', supprimeLe: null },
     take: 4,
   })
 
   return (
     <>
-      <section className="section fiche">
-        <div className="contenu">
-          <nav className="fil-ariane mono">
+      <section className="sec">
+        <div className="wrap">
+          <nav className="fil-ariane">
             <Link href="/boutique">Catalogue</Link>
             <span>/</span>
             <Link href={`/boutique?categorie=${produit.categorie.slug}`}>{produit.categorie.nom}</Link>
@@ -58,74 +53,74 @@ export default async function FicheProduit({ params }: { params: { slug: string 
             <span>{produit.nom}</span>
           </nav>
 
-          <div className="fiche-grille">
-            <Galerie images={images} nom={produit.nom} />
+          <div className="detail">
+            <figure className="fig">
+              <Galerie images={images} nom={produit.nom} />
+              <figcaption>
+                <span>{produit.reference ?? 'FNTC'}</span>
+                <span>{produit.marque ?? produit.categorie.nom}</span>
+              </figcaption>
+            </figure>
 
-            <div className="fiche-infos">
-              <div className="carte-etiquettes">
-                {enPromo && <span className="etiquette etiquette-promo">Promotion</span>}
-                {rupture && <span className="etiquette etiquette-rupture">Rupture</span>}
-                {produit.marque && <span className="etiquette">{produit.marque}</span>}
-              </div>
+            <div>
+              <span className="eyebrow">{produit.categorie.nom}</span>
+              <h1>{produit.nom}</h1>
+              {produit.descriptionCourte && (
+                <p className="lede" style={{ marginTop: '1rem' }}>
+                  {produit.descriptionCourte}
+                </p>
+              )}
 
-              <h1 className="titre-section">{produit.nom}</h1>
-              {produit.reference && <p className="mono">Référence {produit.reference}</p>}
-
-              {produit.descriptionCourte && <p className="doux">{produit.descriptionCourte}</p>}
-
-              <div className="fiche-prix">
-                <strong>{formaterPrix(centimes, symbole)}</strong>
+              <div className="pblock">
+                <b>{formaterPrix(centimes, symbole)}</b>
                 {enPromo && <s>{formaterPrix(produit.prixCentimes, symbole)}</s>}
+                {enPromo && <span className="tag promo">Promo</span>}
               </div>
 
-              <p className="fiche-stock">
+              <p className="mono" style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span
                   className={`temoin ${rupture ? 'temoin-vide' : stockBas ? 'temoin-bas' : 'temoin-ok'}`}
                   aria-hidden
                 />
-                {rupture
-                  ? 'Épuisé pour le moment'
-                  : stockBas
-                    ? `Plus que ${produit.stock} en stock`
-                    : `${produit.stock} en stock`}
-                <span className="doux"> · Livraison {reglages.LIVRAISON_DELAI}</span>
+                {rupture ? 'Épuisé' : stockBas ? `Plus que ${produit.stock} en stock` : `${produit.stock} en stock`}
+                {' · '}
+                Livraison {reglages.LIVRAISON_DELAI}
               </p>
 
               <AjoutPanier produitId={produit.id} stock={produit.stock} />
 
-              <div className="fiche-description">
-                <h2 className="mono">Description</h2>
-                <p>{produit.description}</p>
-              </div>
-
               {caracteristiques.length > 0 && (
-                <div className="fiche-caracteristiques">
-                  <h2 className="mono">Caractéristiques</h2>
-                  <dl>
+                <table className="spec">
+                  <tbody>
                     {caracteristiques.map((c, i) => (
-                      <div key={i}>
-                        <dt>{c.cle}</dt>
-                        <dd>{c.valeur}</dd>
-                      </div>
+                      <tr key={i}>
+                        <th scope="row">{c.cle}</th>
+                        <td>{c.valeur}</td>
+                      </tr>
                     ))}
-                  </dl>
-                </div>
+                  </tbody>
+                </table>
               )}
+
+              <div style={{ marginTop: '1.9rem' }}>
+                <span className="eyebrow">Description</span>
+                <p className="lede" style={{ marginTop: '0.8rem', maxWidth: 'none' }}>
+                  {produit.description}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {similaires.length > 0 && (
-        <section className="section piste">
-          <div className="contenu">
-            <div className="entete-section">
-              <div>
-                <span className="surtitre">Même rayon</span>
-                <h2 className="titre-section">À regarder aussi</h2>
-              </div>
+        <section className="sec">
+          <div className="wrap">
+            <div className="sec-h">
+              <span className="eyebrow">Même rayon</span>
+              <h2>À regarder aussi</h2>
             </div>
-            <div className="grille-produits">
+            <div className="grid">
               {similaires.map((p) => (
                 <CarteProduit key={p.id} produit={p} symbole={symbole} />
               ))}
