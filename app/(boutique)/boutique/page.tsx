@@ -83,12 +83,12 @@ export default async function Catalogue({ searchParams }: { searchParams: Params
   }
 
   return (
-    <section className="section piste">
-      <div className="contenu">
+    <section className="sec">
+      <div className="wrap">
         <div className="entete-section">
           <div>
-            <span className="surtitre">{categorie ? categorie.nom : 'Catalogue'}</span>
-            <h1 className="titre-section">
+            <span className="eyebrow">{categorie ? categorie.nom : 'Catalogue'}</span>
+            <h1 className="sec-titre">
               {categorie ? categorie.nom : recherche ? `Recherche : ${recherche}` : 'Tout le matériel'}
             </h1>
             <p className="mono" style={{ marginTop: '0.6rem' }}>
@@ -107,13 +107,13 @@ export default async function Catalogue({ searchParams }: { searchParams: Params
               defaultValue={recherche}
               aria-label="Rechercher"
             />
-            <button className="bouton" type="submit">
+            <button className="btn btn-solid" type="submit">
               Chercher
             </button>
           </form>
         </div>
 
-        <div className="barre-filtres">
+        <div className="filters">
           <div className="groupe-filtre">
             <span className="mono">Rayon</span>
             <Link className={`puce-filtre ${!categorie ? 'actif' : ''}`} href={lien({ categorie: undefined, page: undefined })}>
@@ -156,11 +156,11 @@ export default async function Catalogue({ searchParams }: { searchParams: Params
         </div>
 
         {produits.length === 0 ? (
-          <p className="vide">
+          <p className="empty">
             Aucun produit ne correspond. Retirez un filtre ou essayez un autre mot.
           </p>
         ) : (
-          <div className="grille-produits">
+          <div className="grid">
             {produits.map((p) => (
               <CarteProduit key={p.id} produit={p} symbole={reglages.DEVISE_SYMBOLE} />
             ))}

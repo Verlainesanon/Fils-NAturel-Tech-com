@@ -57,7 +57,7 @@ export default function FormulaireCompte({ mode, action }: Props) {
 
       {erreur && <p className="message-erreur">{erreur}</p>}
 
-      <button className="bouton" type="submit" disabled={enCours}>
+      <button className="btn btn-solid" type="submit" disabled={enCours}>
         {enCours ? 'Un instant…' : inscription ? 'Créer mon compte' : 'Se connecter'}
       </button>
     </form>

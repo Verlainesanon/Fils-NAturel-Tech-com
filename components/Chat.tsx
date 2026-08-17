@@ -72,9 +72,9 @@ export default function Chat() {
       </button>
 
       {ouvert && (
-        <section className="panneau-chat panneau" aria-label="Chat avec l’équipe">
+        <section className="panneau-chat" aria-label="Chat avec l’équipe">
           <header className="chat-entete">
-            <span className="surtitre">Support</span>
+            <span className="eyebrow">Support</span>
             <p className="mono">Réponse le jour même, sans inscription.</p>
           </header>
 
@@ -106,7 +106,7 @@ export default function Chat() {
                 placeholder="Votre message"
                 aria-label="Votre message"
               />
-              <button className="bouton" type="submit" disabled={envoi || !brouillon.trim()}>
+              <button className="btn btn-solid" type="submit" disabled={envoi || !brouillon.trim()}>
                 Envoyer
               </button>
             </div>

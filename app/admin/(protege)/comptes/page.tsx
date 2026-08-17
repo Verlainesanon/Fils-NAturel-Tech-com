@@ -132,7 +132,7 @@ export default async function Comptes() {
         </div>
 
         <div className="pied-formulaire">
-          <button className="bouton" type="submit">
+          <button className="btn btn-solid" type="submit">
             Créer le compte
           </button>
         </div>

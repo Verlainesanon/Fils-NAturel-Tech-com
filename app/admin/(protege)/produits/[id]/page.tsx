@@ -49,7 +49,7 @@ export default async function ModifierProduit({ params }: { params: { id: string
           <tbody>
             {mouvements.length === 0 && (
               <tr>
-                <td colSpan={5} className="doux">
+                <td colSpan={5} className="lede">
                   Aucun mouvement enregistré.
                 </td>
               </tr>
@@ -62,11 +62,11 @@ export default async function ModifierProduit({ params }: { params: { id: string
                   {m.variation}
                 </td>
                 <td>{m.stockApres}</td>
-                <td className="doux">
+                <td className="lede">
                   {m.motif}
                   {m.note ? ` — ${m.note}` : ''}
                 </td>
-                <td className="doux">{m.auteur ?? 'automatique'}</td>
+                <td className="lede">{m.auteur ?? 'automatique'}</td>
               </tr>
             ))}
           </tbody>

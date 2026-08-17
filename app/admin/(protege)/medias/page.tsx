@@ -31,7 +31,7 @@ export default async function Medias() {
         </div>
         <ChampImagesUnique />
         <div className="pied-formulaire">
-          <button className="bouton" type="submit">
+          <button className="btn btn-solid" type="submit">
             Ajouter
           </button>
         </div>
@@ -52,7 +52,7 @@ export default async function Medias() {
           <tbody>
             {medias.length === 0 && (
               <tr>
-                <td colSpan={6} className="doux">
+                <td colSpan={6} className="lede">
                   Aucune image pour l’instant.
                 </td>
               </tr>
@@ -64,7 +64,7 @@ export default async function Medias() {
                   <img src={m.donnees} alt="" className="vignette-tableau" />
                 </td>
                 <td>{m.nom}</td>
-                <td className="doux">{m.alt || '—'}</td>
+                <td className="lede">{m.alt || '—'}</td>
                 <td className="mono">{m.tailleKo} Ko</td>
                 <td className="mono">{formaterDate(m.creeLe)}</td>
                 <td className="colonne-actions">

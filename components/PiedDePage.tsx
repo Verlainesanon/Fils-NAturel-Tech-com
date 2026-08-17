@@ -12,10 +12,10 @@ export default async function PiedDePage() {
 
   return (
     <footer className="pied">
-      <div className="contenu pied-grille">
+      <div className="wrap pied-grille">
         <div>
-          <p className="surtitre">{reglages.SITE_NOM}</p>
-          <p className="doux" style={{ maxWidth: '30ch' }}>
+          <p className="eyebrow">{reglages.SITE_NOM}</p>
+          <p className="lede" style={{ maxWidth: '30ch' }}>
             {bloc(blocs, 'pied.mention')}
           </p>
         </div>
@@ -37,7 +37,7 @@ export default async function PiedDePage() {
           <p className="mono">Nous joindre</p>
           <a href={`mailto:${reglages.SITE_EMAIL}`}>{reglages.SITE_EMAIL}</a>
           <a href={`tel:${reglages.SITE_TELEPHONE.replace(/\s/g, '')}`}>{reglages.SITE_TELEPHONE}</a>
-          <span className="doux">{reglages.SITE_ADRESSE}</span>
+          <span className="lede">{reglages.SITE_ADRESSE}</span>
           {reseaux.length > 0 && (
             <span className="pied-reseaux">
               {reseaux.map((r) => (
@@ -50,7 +50,7 @@ export default async function PiedDePage() {
         </div>
       </div>
 
-      <div className="contenu pied-bas mono">
+      <div className="wrap pied-bas">
         <span>© {new Date().getFullYear()} {reglages.SITE_NOM}</span>
         <Link href="/admin">Espace administration</Link>
       </div>

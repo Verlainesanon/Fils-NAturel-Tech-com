@@ -139,7 +139,7 @@ export default async function Parametres() {
         </div>
 
         <div className="pied-formulaire">
-          <button className="bouton" type="submit">
+          <button className="btn btn-solid" type="submit">
             Enregistrer les paramètres
           </button>
         </div>

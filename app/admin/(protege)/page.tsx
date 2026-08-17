@@ -57,10 +57,10 @@ export default async function TableauDeBord() {
           <p>Ce qui demande votre attention aujourd’hui.</p>
         </div>
         <div className="admin-actions">
-          <Link className="bouton bouton-fantome" href="/" target="_blank">
+          <Link className="btn btn-line" href="/" target="_blank">
             Voir le site
           </Link>
-          <Link className="bouton" href="/admin/produits/nouveau">
+          <Link className="btn btn-solid" href="/admin/produits/nouveau">
             Ajouter un produit
           </Link>
         </div>
@@ -138,7 +138,7 @@ export default async function TableauDeBord() {
               <tbody>
                 {dernieres.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="doux">
+                    <td colSpan={5} className="lede">
                       Aucune commande pour le moment.
                     </td>
                   </tr>
@@ -178,7 +178,7 @@ export default async function TableauDeBord() {
               <tbody>
                 {stockBas.length === 0 && (
                   <tr>
-                    <td colSpan={2} className="doux">
+                    <td colSpan={2} className="lede">
                       Aucun produit sous le seuil.
                     </td>
                   </tr>

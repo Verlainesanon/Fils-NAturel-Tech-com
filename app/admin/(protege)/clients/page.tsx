@@ -38,7 +38,7 @@ export default async function Clients({ searchParams }: { searchParams: { q?: st
 
       <form className="filtres-admin" action="/admin/clients">
         <input name="q" defaultValue={recherche} placeholder="Nom ou email" aria-label="Rechercher" />
-        <button className="bouton bouton-fantome" type="submit">
+        <button className="btn btn-line" type="submit">
           Filtrer
         </button>
       </form>
@@ -58,7 +58,7 @@ export default async function Clients({ searchParams }: { searchParams: { q?: st
           <tbody>
             {clients.length === 0 && (
               <tr>
-                <td colSpan={6} className="doux">
+                <td colSpan={6} className="lede">
                   Aucun client.
                 </td>
               </tr>
@@ -75,7 +75,7 @@ export default async function Clients({ searchParams }: { searchParams: { q?: st
                     <br />
                     <span className="mono">{c.email}</span>
                   </td>
-                  <td className="doux">{c.motDePasse ? 'Avec compte' : 'Invité'}</td>
+                  <td className="lede">{c.motDePasse ? 'Avec compte' : 'Invité'}</td>
                   <td>
                     <span className={`badge-fidelite badge-${c.badge}`}>{c.badge}</span>
                   </td>

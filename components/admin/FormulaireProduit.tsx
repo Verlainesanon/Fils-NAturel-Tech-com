@@ -143,10 +143,10 @@ export default function FormulaireProduit({
       </div>
 
       <div className="pied-formulaire">
-        <button className="bouton" type="submit">
+        <button className="btn btn-solid" type="submit">
           {produit ? 'Enregistrer les modifications' : 'Créer le produit'}
         </button>
-        <Link className="bouton bouton-fantome" href="/admin/produits">
+        <Link className="btn btn-line" href="/admin/produits">
           Annuler
         </Link>
         {produit && (

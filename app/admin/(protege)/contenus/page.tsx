@@ -81,7 +81,7 @@ export default async function Contenus() {
                 </div>
 
                 <div className="pied-formulaire">
-                  <button className="bouton" type="submit">
+                  <button className="btn btn-solid" type="submit">
                     Enregistrer
                   </button>
                 </div>

@@ -12,14 +12,14 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
 
   if (panier.lignes.length === 0) {
     return (
-      <section className="section piste">
-        <div className="contenu">
-          <span className="surtitre">Panier</span>
-          <h1 className="titre-section">Votre panier est vide</h1>
-          <p className="doux" style={{ maxWidth: '46ch' }}>
+      <section className="sec">
+        <div className="wrap">
+          <span className="eyebrow">Panier</span>
+          <h1 className="sec-titre">Votre panier est vide</h1>
+          <p className="lede" style={{ maxWidth: '46ch' }}>
             Ajoutez du matériel depuis le catalogue : le panier se garde 30 jours, même sans compte.
           </p>
-          <Link className="bouton" href="/boutique" style={{ marginTop: '1.5rem' }}>
+          <Link className="btn btn-solid" href="/boutique" style={{ marginTop: '1.5rem' }}>
             Voir le catalogue
           </Link>
         </div>
@@ -28,10 +28,10 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
   }
 
   return (
-    <section className="section piste">
-      <div className="contenu">
-        <span className="surtitre">Panier</span>
-        <h1 className="titre-section" style={{ marginBottom: '2rem' }}>
+    <section className="sec">
+      <div className="wrap">
+        <span className="eyebrow">Panier</span>
+        <h1 className="sec-titre" style={{ marginBottom: '2rem' }}>
           {panier.nombreArticles} article{panier.nombreArticles > 1 ? 's' : ''}
         </h1>
 
@@ -53,7 +53,7 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
                     <strong>{ligne.nom}</strong>
                   </Link>
                   <span className="mono">{ligne.reference ?? ''}</span>
-                  <span className="panier-prix-unite doux">
+                  <span className="panier-prix-unite lede">
                     {formaterPrix(ligne.prixCentimes, symbole)} l’unité
                     {ligne.prixBarreCentimes && (
                       <s> {formaterPrix(ligne.prixBarreCentimes, symbole)}</s>
@@ -85,7 +85,7 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
             ))}
           </div>
 
-          <aside className="panier-resume panneau">
+          <aside className="panier-resume card-l">
             <h2 className="mono">Récapitulatif</h2>
 
             <div className="ligne-resume">
@@ -118,7 +118,7 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
               </label>
               <div className="forme-promo-champs">
                 <input id="code" name="code" defaultValue={panier.promo?.code ?? ''} placeholder="FNTC10" />
-                <button className="bouton bouton-fantome" type="submit">
+                <button className="btn btn-line" type="submit">
                   Appliquer
                 </button>
               </div>
@@ -127,7 +127,7 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
               )}
             </form>
 
-            <Link href="/commande" className="bouton bouton-or" style={{ width: '100%' }}>
+            <Link href="/commande" className="btn btn-sig" style={{ width: '100%' }}>
               Passer la commande
             </Link>
             <Link href="/boutique" className="lien-souligne" style={{ alignSelf: 'center' }}>

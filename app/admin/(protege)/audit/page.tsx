@@ -49,7 +49,7 @@ export default async function Audit({ searchParams }: { searchParams: { auteur?:
             </option>
           ))}
         </select>
-        <button className="bouton bouton-fantome" type="submit">
+        <button className="btn btn-line" type="submit">
           Filtrer
         </button>
       </form>
@@ -68,7 +68,7 @@ export default async function Audit({ searchParams }: { searchParams: { auteur?:
           <tbody>
             {entrees.length === 0 && (
               <tr>
-                <td colSpan={5} className="doux">
+                <td colSpan={5} className="lede">
                   Aucune entrée pour ces filtres.
                 </td>
               </tr>
@@ -81,7 +81,7 @@ export default async function Audit({ searchParams }: { searchParams: { auteur?:
                   <span className="etat">{e.action}</span>
                 </td>
                 <td className="mono">{e.cible}</td>
-                <td className="doux">{e.details || '—'}</td>
+                <td className="lede">{e.details || '—'}</td>
               </tr>
             ))}
           </tbody>

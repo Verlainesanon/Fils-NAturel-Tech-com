@@ -11,15 +11,15 @@ export default function Inscription() {
   if (clientIdActuel()) redirect('/compte')
 
   return (
-    <section className="section piste">
-      <div className="contenu" style={{ maxWidth: '30rem' }}>
-        <span className="surtitre">Compte</span>
-        <h1 className="titre-section">Créer un compte</h1>
-        <p className="doux">
+    <section className="sec">
+      <div className="wrap" style={{ maxWidth: '30rem' }}>
+        <span className="eyebrow">Compte</span>
+        <h1 className="sec-titre">Créer un compte</h1>
+        <p className="lede">
           Vos commandes passées en tant qu’invité avec le même email seront rattachées automatiquement.
         </p>
 
-        <div className="panneau bloc-formulaire" style={{ marginTop: '1.5rem' }}>
+        <div className="card-l bloc-formulaire" style={{ marginTop: '1.5rem' }}>
           <FormulaireCompte mode="inscription" action={inscrire} />
         </div>
 

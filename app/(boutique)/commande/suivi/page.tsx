@@ -32,12 +32,12 @@ export default async function Suivi({
   const indexEtape = commande ? ETAPES.findIndex((e) => e.cle === commande.statutTraitement) : -1
 
   return (
-    <section className="section piste">
-      <div className="contenu" style={{ maxWidth: '52rem' }}>
-        <span className="surtitre">Suivi</span>
-        <h1 className="titre-section">Où en est ma commande ?</h1>
+    <section className="sec">
+      <div className="wrap" style={{ maxWidth: '52rem' }}>
+        <span className="eyebrow">Suivi</span>
+        <h1 className="sec-titre">Où en est ma commande ?</h1>
 
-        <form className="formulaire panneau bloc-formulaire" action="/commande/suivi" style={{ marginTop: '1.6rem' }}>
+        <form className="formulaire card-l bloc-formulaire" action="/commande/suivi" style={{ marginTop: '1.6rem' }}>
           <div className="paire-champs">
             <div className="champ">
               <label htmlFor="numero">Numéro de commande</label>
@@ -48,7 +48,7 @@ export default async function Suivi({
               <input id="email" name="email" type="email" defaultValue={email} required />
             </div>
           </div>
-          <button className="bouton" type="submit">
+          <button className="btn btn-solid" type="submit">
             Rechercher
           </button>
         </form>
@@ -60,7 +60,7 @@ export default async function Suivi({
         )}
 
         {commande && (
-          <div className="panneau recap-commande" style={{ marginTop: '1.8rem' }}>
+          <div className="card-l recap-commande" style={{ marginTop: '1.8rem' }}>
             <div className="ligne-resume">
               <strong>{commande.numero}</strong>
               <span className="mono">{formaterDateHeure(commande.creeLe)}</span>

@@ -48,7 +48,7 @@ export default async function Promotions({ searchParams }: { searchParams: { mod
             <tbody>
               {promos.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="doux">
+                  <td colSpan={6} className="lede">
                     Aucun code promo.
                   </td>
                 </tr>
@@ -63,7 +63,7 @@ export default async function Promotions({ searchParams }: { searchParams: { mod
                     </span>
                   </td>
                   <td>{decrire(p)}</td>
-                  <td className="doux">
+                  <td className="lede">
                     {p.minimumCentimes > 0 ? formaterPrix(p.minimumCentimes, symbole) : '—'}
                   </td>
                   <td className="mono">
@@ -192,11 +192,11 @@ export default async function Promotions({ searchParams }: { searchParams: { mod
           </label>
 
           <div className="pied-formulaire">
-            <button className="bouton" type="submit">
+            <button className="btn btn-solid" type="submit">
               {enEdition ? 'Enregistrer' : 'Créer le code'}
             </button>
             {enEdition && (
-              <a className="bouton bouton-fantome" href="/admin/promos">
+              <a className="btn btn-line" href="/admin/promos">
                 Annuler
               </a>
             )}

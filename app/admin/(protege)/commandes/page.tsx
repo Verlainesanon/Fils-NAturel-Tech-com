@@ -61,7 +61,7 @@ export default async function Commandes({
           <option value="echouee">Échouée</option>
           <option value="remboursee">Remboursée</option>
         </select>
-        <button className="bouton bouton-fantome" type="submit">
+        <button className="btn btn-line" type="submit">
           Filtrer
         </button>
       </form>
@@ -82,7 +82,7 @@ export default async function Commandes({
           <tbody>
             {commandes.length === 0 && (
               <tr>
-                <td colSpan={7} className="doux">
+                <td colSpan={7} className="lede">
                   Aucune commande ne correspond à ces filtres.
                 </td>
               </tr>

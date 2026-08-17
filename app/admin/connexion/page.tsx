@@ -14,7 +14,7 @@ export default async function ConnexionAdmin() {
 
   return (
     <main className="connexion-admin">
-      <div className="panneau carte-connexion">
+      <div className="carte-connexion">
         <div className="admin-marque" style={{ marginBottom: 0 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={reglages.SITE_LOGO || '/logo.jpeg'} alt="" />
@@ -40,7 +40,7 @@ export default async function ConnexionAdmin() {
               autoComplete="current-password"
             />
           </div>
-          <button className="bouton" type="submit">
+          <button className="btn btn-solid" type="submit">
             Entrer
           </button>
         </FormulaireAdmin>

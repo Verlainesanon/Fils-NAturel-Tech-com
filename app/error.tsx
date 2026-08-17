@@ -7,17 +7,17 @@
  */
 export default function Erreur({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <main className="section piste">
-      <div className="contenu" style={{ maxWidth: '46rem' }}>
-        <span className="surtitre">Erreur</span>
-        <h1 className="titre-section">Le site n’a pas pu afficher cette page</h1>
+    <main className="sec">
+      <div className="wrap" style={{ maxWidth: '46rem' }}>
+        <span className="eyebrow">Erreur</span>
+        <h1 className="sec-titre">Le site n’a pas pu afficher cette page</h1>
 
-        <p className="doux">
+        <p className="lede">
           Dans la quasi-totalité des cas, la base de données n’est pas joignable. Trois choses à
           vérifier dans cet ordre, côté hébergeur :
         </p>
 
-        <ol className="doux" style={{ lineHeight: 1.9, maxWidth: '54ch' }}>
+        <ol className="lede" style={{ lineHeight: 1.9, maxWidth: '54ch' }}>
           <li>
             La variable <code>DATABASE_URL</code> est bien définie sur le service web, et pointe sur
             la base PostgreSQL.
@@ -31,7 +31,7 @@ export default function Erreur({ error, reset }: { error: Error & { digest?: str
         </ol>
 
         <div className="hero-actions" style={{ marginTop: '1.5rem' }}>
-          <button className="bouton" onClick={reset}>
+          <button className="btn btn-solid" onClick={reset}>
             Réessayer
           </button>
           <a className="lien-souligne" href="/">

@@ -7,7 +7,7 @@ export default function Galerie({ images, nom }: { images: string[]; nom: string
 
   if (images.length === 0) {
     return (
-      <div className="galerie-principale vide-visuel">
+      <div className="galerie-principale">
         <span className="mono">Visuel à venir</span>
       </div>
     )

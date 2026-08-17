@@ -35,7 +35,7 @@ export default async function Bannieres({ searchParams }: { searchParams: { modi
             <tbody>
               {bannieres.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="doux">
+                  <td colSpan={6} className="lede">
                     Aucune bannière.
                   </td>
                 </tr>
@@ -44,7 +44,7 @@ export default async function Bannieres({ searchParams }: { searchParams: { modi
                 <tr key={b.id}>
                   <td>{b.texte}</td>
                   <td className="mono">{b.lien ?? '—'}</td>
-                  <td className="doux">{b.couleur}</td>
+                  <td className="lede">{b.couleur}</td>
                   <td className="mono">
                     {b.debut || b.fin ? `${formaterDate(b.debut)} → ${formaterDate(b.fin)}` : 'sans limite'}
                   </td>
@@ -123,11 +123,11 @@ export default async function Bannieres({ searchParams }: { searchParams: { modi
           </label>
 
           <div className="pied-formulaire">
-            <button className="bouton" type="submit">
+            <button className="btn btn-solid" type="submit">
               {enEdition ? 'Enregistrer' : 'Créer'}
             </button>
             {enEdition && (
-              <a className="bouton bouton-fantome" href="/admin/bannieres">
+              <a className="btn btn-line" href="/admin/bannieres">
                 Annuler
               </a>
             )}

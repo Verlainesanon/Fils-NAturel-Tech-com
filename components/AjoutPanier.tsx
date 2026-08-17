@@ -13,7 +13,7 @@ export default function AjoutPanier({ produitId, stock }: { produitId: string; s
   if (stock <= 0) {
     return (
       <div className="bloc-achat">
-        <button className="bouton" disabled>
+        <button className="btn btn-solid" disabled>
           Épuisé
         </button>
         <p className="mono">Prévenez-nous par le chat si vous souhaitez être averti du réapprovisionnement.</p>
@@ -52,7 +52,7 @@ export default function AjoutPanier({ produitId, stock }: { produitId: string; s
         </button>
       </div>
 
-      <button className="bouton" onClick={envoyer} disabled={enCours}>
+      <button className="btn btn-solid" onClick={envoyer} disabled={enCours}>
         {enCours ? 'Ajout…' : 'Ajouter au panier'}
       </button>
 

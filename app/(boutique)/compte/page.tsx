@@ -31,25 +31,25 @@ export default async function EspaceCompte() {
   const symbole = reglages.DEVISE_SYMBOLE
 
   return (
-    <section className="section piste">
-      <div className="contenu">
+    <section className="sec">
+      <div className="wrap">
         <div className="entete-section">
           <div>
-            <span className="surtitre">Mon compte</span>
-            <h1 className="titre-section">Bonjour {client.nom.split(' ')[0]}</h1>
+            <span className="eyebrow">Mon compte</span>
+            <h1 className="sec-titre">Bonjour {client.nom.split(' ')[0]}</h1>
           </div>
           <form action={deconnecter}>
-            <button className="bouton bouton-fantome" type="submit">
+            <button className="btn btn-line" type="submit">
               Se déconnecter
             </button>
           </form>
         </div>
 
         <div className="grille-compte">
-          <div className="panneau bloc-formulaire carte-badge">
+          <div className="card-l bloc-formulaire carte-badge">
             <span className={`badge-fidelite badge-${client.badge}`}>{BADGES[client.badge] ?? client.badge}</span>
             <p className="mono">{commandes.length} commande(s)</p>
-            <p className="doux" style={{ margin: 0, fontSize: '0.9rem' }}>
+            <p className="lede" style={{ margin: 0, fontSize: '0.9rem' }}>
               {client.badge === 'or'
                 ? 'Vous avez le badge le plus élevé. Merci pour votre fidélité.'
                 : `Passez ${
@@ -62,31 +62,31 @@ export default async function EspaceCompte() {
             </p>
           </div>
 
-          <div className="panneau bloc-formulaire">
+          <div className="card-l bloc-formulaire">
             <h2 className="mono">Coordonnées</h2>
             <p style={{ margin: 0 }}>{client.nom}</p>
-            <p className="doux" style={{ margin: 0 }}>{client.email}</p>
-            {client.telephone && <p className="doux" style={{ margin: 0 }}>{client.telephone}</p>}
+            <p className="lede" style={{ margin: 0 }}>{client.email}</p>
+            {client.telephone && <p className="lede" style={{ margin: 0 }}>{client.telephone}</p>}
           </div>
         </div>
 
-        <h2 className="titre-section" style={{ fontSize: '1.35rem', marginTop: '2.5rem' }}>
+        <h2 className="sec-titre" style={{ fontSize: '1.35rem', marginTop: '2.5rem' }}>
           Mes commandes
         </h2>
 
         {commandes.length === 0 ? (
-          <p className="vide" style={{ marginTop: '1rem' }}>
+          <p className="empty" style={{ marginTop: '1rem' }}>
             Aucune commande pour le moment. <Link href="/boutique" className="or">Voir le catalogue</Link>
           </p>
         ) : (
           <div className="liste-commandes">
             {commandes.map((c) => (
-              <article key={c.id} className="panneau ligne-commande">
+              <article key={c.id} className="card-l ligne-commande">
                 <div>
                   <strong>{c.numero}</strong>
                   <span className="mono">{formaterDate(c.creeLe)}</span>
                 </div>
-                <span className="doux">
+                <span className="lede">
                   {c.lignes.length} article{c.lignes.length > 1 ? 's' : ''}
                 </span>
                 <span className={`etiquette etat-${c.statutTraitement}`}>{c.statutTraitement}</span>

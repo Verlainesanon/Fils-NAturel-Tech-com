@@ -35,7 +35,7 @@ export default async function DetailCommande({ params }: { params: { id: string 
             )}
           </p>
         </div>
-        <Link className="bouton bouton-fantome" href="/admin/commandes">
+        <Link className="btn btn-line" href="/admin/commandes">
           Retour à la liste
         </Link>
       </header>
@@ -99,7 +99,7 @@ export default async function DetailCommande({ params }: { params: { id: string 
             </div>
 
             <h2>Livraison</h2>
-            <p className="large doux" style={{ margin: 0 }}>
+            <p className="large lede" style={{ margin: 0 }}>
               {commande.nomContact}
               <br />
               {commande.adresseTexte}
@@ -127,7 +127,7 @@ export default async function DetailCommande({ params }: { params: { id: string 
               </select>
             </div>
             <div className="pied-formulaire">
-              <button className="bouton" type="submit">
+              <button className="btn btn-solid" type="submit">
                 Mettre à jour
               </button>
             </div>
@@ -155,7 +155,7 @@ export default async function DetailCommande({ params }: { params: { id: string 
               </select>
             </div>
             <div className="pied-formulaire">
-              <button className="bouton" type="submit">
+              <button className="btn btn-solid" type="submit">
                 Enregistrer
               </button>
             </div>
@@ -173,7 +173,7 @@ export default async function DetailCommande({ params }: { params: { id: string 
               <textarea id="noteInterne" name="noteInterne" rows={3} defaultValue={commande.noteInterne ?? ''} />
             </div>
             <div className="pied-formulaire">
-              <button className="bouton" type="submit">
+              <button className="btn btn-solid" type="submit">
                 Enregistrer
               </button>
             </div>

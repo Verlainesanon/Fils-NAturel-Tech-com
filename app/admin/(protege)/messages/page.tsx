@@ -44,7 +44,7 @@ export default async function Messages({ searchParams }: { searchParams: { c?: s
       <div className="grille-messagerie">
         <div className="liste-conversations">
           {conversations.length === 0 && (
-            <p className="doux" style={{ padding: '1rem' }}>
+            <p className="lede" style={{ padding: '1rem' }}>
               Aucune conversation pour l’instant.
             </p>
           )}
@@ -59,7 +59,7 @@ export default async function Messages({ searchParams }: { searchParams: { c?: s
                 {c._count.messages > 0 && <span className="admin-pastille"> {c._count.messages} </span>}
               </strong>
               <span className="mono">{formaterDateHeure(c.majLe)}</span>
-              <p className="doux" style={{ margin: '0.3rem 0 0', fontSize: '0.85rem' }}>
+              <p className="lede" style={{ margin: '0.3rem 0 0', fontSize: '0.85rem' }}>
                 {c.messages[0]?.corps.slice(0, 60) ?? 'Conversation vide'}
               </p>
               <span className={`etat etat-${c.statut}`}>{c.statut}</span>
@@ -110,14 +110,14 @@ export default async function Messages({ searchParams }: { searchParams: { c?: s
                 <textarea id="corps" name="corps" rows={3} required />
               </div>
               <div className="pied-formulaire">
-                <button className="bouton" type="submit">
+                <button className="btn btn-solid" type="submit">
                   Envoyer
                 </button>
               </div>
             </FormulaireAdmin>
           </div>
         ) : (
-          <p className="vide">Sélectionnez une conversation pour la lire.</p>
+          <p className="empty">Sélectionnez une conversation pour la lire.</p>
         )}
       </div>
     </>

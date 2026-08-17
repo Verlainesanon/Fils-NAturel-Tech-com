@@ -55,14 +55,14 @@ export default function FormulaireCommande({ defauts, carteActive }: Props) {
           <input type="radio" name="mode" value="hors_ligne" defaultChecked />
           <span>
             <strong>Payer à la livraison</strong>
-            <span className="doux">Vous réglez en espèces à la réception.</span>
+            <span className="lede">Vous réglez en espèces à la réception.</span>
           </span>
         </label>
         <label>
           <input type="radio" name="mode" value="virement" />
           <span>
             <strong>Virement bancaire</strong>
-            <span className="doux">Nous vous envoyons les coordonnées par email.</span>
+            <span className="lede">Nous vous envoyons les coordonnées par email.</span>
           </span>
         </label>
         {carteActive && (
@@ -70,7 +70,7 @@ export default function FormulaireCommande({ defauts, carteActive }: Props) {
             <input type="radio" name="mode" value="carte" />
             <span>
               <strong>Carte bancaire</strong>
-              <span className="doux">Paiement sécurisé en ligne.</span>
+              <span className="lede">Paiement sécurisé en ligne.</span>
             </span>
           </label>
         )}
@@ -78,7 +78,7 @@ export default function FormulaireCommande({ defauts, carteActive }: Props) {
 
       {erreur && <p className="message-erreur">{erreur}</p>}
 
-      <button className="bouton bouton-or" type="submit" disabled={enCours}>
+      <button className="btn btn-sig" type="submit" disabled={enCours}>
         {enCours ? 'Envoi…' : 'Confirmer la commande'}
       </button>
       <p className="mono">Aucun compte n’est nécessaire. Vous recevrez un email de confirmation.</p>

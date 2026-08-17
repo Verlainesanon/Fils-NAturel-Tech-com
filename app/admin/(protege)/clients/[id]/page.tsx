@@ -37,7 +37,7 @@ export default async function FicheClient({ params }: { params: { id: string } }
             {client.motDePasse ? 'compte actif' : 'client invité'}
           </p>
         </div>
-        <Link className="bouton bouton-fantome" href="/admin/clients">
+        <Link className="btn btn-line" href="/admin/clients">
           Retour à la liste
         </Link>
       </header>
@@ -72,7 +72,7 @@ export default async function FicheClient({ params }: { params: { id: string } }
             <tbody>
               {client.commandes.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="doux">
+                  <td colSpan={5} className="lede">
                     Aucune commande.
                   </td>
                 </tr>
@@ -126,7 +126,7 @@ export default async function FicheClient({ params }: { params: { id: string } }
           </div>
 
           <div className="pied-formulaire">
-            <button className="bouton" type="submit">
+            <button className="btn btn-solid" type="submit">
               Enregistrer
             </button>
           </div>

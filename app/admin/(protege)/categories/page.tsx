@@ -42,7 +42,7 @@ export default async function Categories({ searchParams }: { searchParams: { mod
                     <br />
                     <span className="mono">{c.slug}</span>
                   </td>
-                  <td className="doux">{c.parent?.nom ?? '—'}</td>
+                  <td className="lede">{c.parent?.nom ?? '—'}</td>
                   <td>{c._count.produits}</td>
                   <td className="mono">{c.ordre}</td>
                   <td>{c.visible ? 'Oui' : 'Non'}</td>
@@ -110,11 +110,11 @@ export default async function Categories({ searchParams }: { searchParams: { mod
           </label>
 
           <div className="pied-formulaire">
-            <button className="bouton" type="submit">
+            <button className="btn btn-solid" type="submit">
               {enEdition ? 'Enregistrer' : 'Créer'}
             </button>
             {enEdition && (
-              <a className="bouton bouton-fantome" href="/admin/categories">
+              <a className="btn btn-line" href="/admin/categories">
                 Annuler
               </a>
             )}

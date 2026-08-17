@@ -16,15 +16,15 @@ export default async function PageCommande() {
   const symbole = panier.reglages.DEVISE_SYMBOLE
 
   return (
-    <section className="section piste">
-      <div className="contenu">
-        <span className="surtitre">Commande</span>
-        <h1 className="titre-section" style={{ marginBottom: '2rem' }}>
+    <section className="sec">
+      <div className="wrap">
+        <span className="eyebrow">Commande</span>
+        <h1 className="sec-titre" style={{ marginBottom: '2rem' }}>
           Livraison et paiement
         </h1>
 
         <div className="panier-grille">
-          <div className="panneau bloc-formulaire">
+          <div className="card-l bloc-formulaire">
             <FormulaireCommande
               defauts={{
                 nom: client?.nom ?? '',
@@ -35,7 +35,7 @@ export default async function PageCommande() {
             />
           </div>
 
-          <aside className="panier-resume panneau">
+          <aside className="panier-resume card-l">
             <h2 className="mono">Votre commande</h2>
             {panier.lignes.map((l) => (
               <div key={l.produitId} className="ligne-resume">

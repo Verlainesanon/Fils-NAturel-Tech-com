@@ -38,7 +38,7 @@ export default async function ListeProduits({
           <h1>Produits</h1>
           <p>{produits.length} référence(s) affichée(s).</p>
         </div>
-        <Link className="bouton" href="/admin/produits/nouveau">
+        <Link className="btn btn-solid" href="/admin/produits/nouveau">
           Ajouter un produit
         </Link>
       </header>
@@ -59,7 +59,7 @@ export default async function ListeProduits({
           <option value="brouillon">Brouillon</option>
           <option value="archive">Archivé</option>
         </select>
-        <button className="bouton bouton-fantome" type="submit">
+        <button className="btn btn-line" type="submit">
           Filtrer
         </button>
       </form>
@@ -80,7 +80,7 @@ export default async function ListeProduits({
           <tbody>
             {produits.length === 0 && (
               <tr>
-                <td colSpan={7} className="doux">
+                <td colSpan={7} className="lede">
                   Aucun produit ne correspond à ces filtres.
                 </td>
               </tr>
@@ -105,7 +105,7 @@ export default async function ListeProduits({
                     <br />
                     <span className="mono">{p.reference ?? ''}</span>
                   </td>
-                  <td className="doux">{p.categorie.nom}</td>
+                  <td className="lede">{p.categorie.nom}</td>
                   <td>
                     {formaterPrix(centimes, symbole)}
                     {enPromo && <span className="mono"> promo</span>}
