@@ -8,7 +8,9 @@ services:
     plan: free
     region: oregon
     branch: main
-    buildCommand: npm ci && npx prisma migrate deploy && npm run build
+    # --include=dev : Tailwind et TypeScript sont nécessaires à la construction,
+    # même quand l'hébergeur installe en mode production.
+    buildCommand: npm ci --include=dev && npx prisma migrate deploy && npm run build
     startCommand: npm run start
     healthCheckPath: /
     envVars:
