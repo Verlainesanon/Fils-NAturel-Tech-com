@@ -27,8 +27,17 @@ export type CleReglage = keyof typeof REGLAGES_DEFAUT
 export type Reglages = Record<CleReglage, string>
 
 export async function lireReglages(): Promise<Reglages> {
-  const lignes = await prisma.setting.findMany()
   const valeurs = { ...REGLAGES_DEFAUT } as Reglages
+
+  // Pendant la construction du site, la base n'est pas toujours joignable :
+  // on retombe alors sur les valeurs par défaut au lieu de faire échouer le build.
+  let lignes: { cle: string; valeur: string }[] = []
+  try {
+    lignes = await prisma.setting.findMany()
+  } catch {
+    return valeurs
+  }
+
   for (const ligne of lignes) {
     if (ligne.cle in valeurs) valeurs[ligne.cle as CleReglage] = ligne.valeur
   }

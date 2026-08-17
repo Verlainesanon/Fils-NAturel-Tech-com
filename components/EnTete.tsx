@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db'
 import { lirePanier } from '@/lib/cart'
 import { lireReglages } from '@/lib/settings'
 import { clientActuel } from '@/lib/auth'
+import Feuille, { Tresse } from '@/components/Feuille'
 
 export default async function EnTete() {
   const [categories, reglages, client] = await Promise.all([
@@ -34,9 +35,13 @@ export default async function EnTete() {
         </Link>
 
         <nav className="nav-vitrine" aria-label="Catégories">
-          <Link href="/boutique">Tout le catalogue</Link>
+          <Link href="/boutique">
+            <Feuille taille={14} />
+            Tout le catalogue
+          </Link>
           {categories.map((c) => (
             <Link key={c.id} href={`/boutique?categorie=${c.slug}`}>
+              <Feuille taille={14} />
               {c.nom}
             </Link>
           ))}
@@ -52,6 +57,7 @@ export default async function EnTete() {
           </Link>
         </div>
       </div>
+      <Tresse className="tresse-entete" />
     </header>
   )
 }

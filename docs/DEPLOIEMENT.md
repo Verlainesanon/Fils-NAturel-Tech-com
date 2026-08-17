@@ -1,125 +1,128 @@
-# Mettre le site en ligne — pas à pas
+# Mettre le site en ligne sur Render — pas à pas
 
-Objectif : passer d’un site qui tourne sur votre ordinateur à une adresse publique que
-vous pouvez partager. Comptez une heure la première fois. Tout ce qui suit est gratuit
-aux volumes d’une boutique qui démarre.
-
-Trois comptes à créer, dans cet ordre : GitHub (le code), Neon (la base de données),
-Vercel (l’hébergement).
+Le projet contient un fichier `render.yaml` : Render lit ce fichier et crée tout seul
+le site **et** la base de données. Comptez une trentaine de minutes la première fois.
 
 ---
 
-## 1. Mettre le code sur GitHub
+## 1. Le code doit être sur GitHub
 
-1. Créez un compte sur https://github.com puis un dépôt **privé** nommé `fntc`.
-   Ne cochez rien d’autre (pas de README, pas de .gitignore).
-2. Dans le dossier du projet, un terminal ouvert, tapez :
+C’est déjà fait : https://github.com/Verlainesanon/Fils-NAturel-Tech-com
 
-```bash
-git remote add origin https://github.com/VOTRE-NOM/fntc.git
-git branch -M main
-git push -u origin main
-```
-
-GitHub demandera vos identifiants. Si un mot de passe est refusé, créez un jeton dans
-*Settings → Developer settings → Personal access tokens* et utilisez-le comme mot de
-passe.
-
-La base `prisma/dev.db` n’est pas envoyée : c’est voulu, la vraie base sera ailleurs.
-
----
-
-## 2. Créer la base de données (Neon)
-
-1. Compte gratuit sur https://neon.tech.
-2. *Create project* → nom `fntc`, région la plus proche de vos clients.
-3. Neon affiche une **chaîne de connexion** qui commence par `postgresql://`.
-   Copiez-la, gardez-la de côté.
-
-Puis, dans le projet, ouvrez `prisma/schema.prisma` et changez une seule ligne :
-
-```prisma
-datasource db {
-  provider = "postgresql"   // au lieu de "sqlite"
-  url      = env("DATABASE_URL")
-}
-```
-
-Créez ensuite le fichier `.env.production.local` (il n’est jamais envoyé sur GitHub) :
-
-```
-DATABASE_URL="la-chaine-copiee-chez-neon"
-```
-
-Et préparez la base distante :
+Après chaque modification, envoyez-la avec :
 
 ```bash
-npx dotenv -e .env.production.local -- npx prisma migrate deploy
-npx dotenv -e .env.production.local -- npx prisma db seed
-```
-
-Si la commande `dotenv` n’existe pas, remplacez temporairement `DATABASE_URL` dans
-`.env` par la chaîne Neon, lancez `npx prisma migrate deploy` puis
-`npx prisma db seed`, et remettez ensuite l’ancienne valeur.
-
-N’oubliez pas de valider le changement de `schema.prisma` :
-
-```bash
-git add prisma/schema.prisma
-git commit -m "chore: basculer la base sur PostgreSQL"
+git add -A
+git commit -m "description du changement"
 git push
 ```
 
+Render republie automatiquement à chaque `git push`.
+
 ---
 
-## 3. Publier le site (Vercel)
+## 2. Créer le site sur Render
 
-1. Compte gratuit sur https://vercel.com, en vous connectant **avec GitHub**.
-2. *Add New → Project* → choisissez le dépôt `fntc` → *Import*.
-3. Avant de cliquer sur *Deploy*, ouvrez **Environment Variables** et ajoutez :
+1. Compte gratuit sur https://render.com, en vous connectant **avec GitHub**.
+2. Tableau de bord → **New → Blueprint**.
+3. Choisissez le dépôt `Fils-NAturel-Tech-com`. Render détecte `render.yaml` et propose :
+   - un service web `fntc`
+   - une base PostgreSQL `fntc-db`
+4. **Apply**. Render crée la base, installe les dépendances, applique les tables et
+   construit le site.
 
-   | Nom | Valeur |
-   |---|---|
-   | `DATABASE_URL` | la chaîne de connexion Neon |
-   | `SESSION_SECRET` | une longue phrase aléatoire, gardée secrète |
+Le premier déploiement prend cinq à dix minutes. À la fin, Render donne une adresse du
+type `https://fntc.onrender.com` — **c’est le lien à partager**.
 
-4. *Deploy*. Au bout de deux à trois minutes, Vercel donne une adresse du type
-   `https://fntc.vercel.app`. **C’est le lien à partager.**
+Vous n’avez aucune variable à saisir à la main : `DATABASE_URL` est branchée sur la base
+automatiquement, et `SESSION_SECRET` est généré par Render.
 
-À chaque `git push`, Vercel republie le site automatiquement.
+---
+
+## 3. Remplir la base la première fois
+
+La base est créée vide. Une seule fois, après le premier déploiement :
+
+1. Dans Render, ouvrez le service `fntc` → onglet **Shell**.
+2. Tapez :
+
+```bash
+npm run db:seed
+```
+
+Cela crée les 4 catégories, les 12 produits d’exemple, le code promo `FNTC10` et le
+compte administrateur.
+
+> Ne relancez pas cette commande plus tard : elle recréerait les produits d’exemple que
+> vous auriez supprimés.
 
 ---
 
 ## 4. Les premières choses à faire en ligne
 
-1. Ouvrez `https://votre-adresse/admin` et connectez-vous avec `proprietaire` /
-   `FNTC-admin-2026`.
-2. **Changez immédiatement le mot de passe** dans *Comptes admin* (12 caractères
-   minimum).
-3. Dans *Paramètres* : nom, slogan, email, téléphone, adresse, logo, symbole de la
-   devise, frais de livraison.
-4. Dans *Produits* : remplacez les 12 produits d’exemple par les vôtres, avec photos.
-5. Dans *Textes du site* : ajustez les textes de l’accueil à votre voix.
+1. Ouvrez `https://votre-adresse.onrender.com/admin`
+2. Connectez-vous : `proprietaire` / `FNTC-admin-2026`
+3. **Changez ce mot de passe immédiatement** dans *Comptes admin* (12 caractères minimum).
+4. *Paramètres* : nom, slogan, email, téléphone, adresse, logo, devise, frais de livraison.
+5. *Produits* : remplacez les produits d’exemple par les vôtres, avec photos.
+6. *Textes du site* : ajustez les textes de l’accueil.
 
 ---
 
-## 5. Un nom de domaine à vous (facultatif)
+## 5. À savoir sur le forfait gratuit de Render
 
-Achetez un domaine (OVH, Namecheap, Gandi…), puis dans Vercel : *Settings → Domains →
-Add*. Vercel affiche deux lignes à recopier chez votre vendeur de domaine. Le
-certificat de sécurité (le cadenas) est automatique.
+- **Le site s’endort** après 15 minutes sans visite. La visite suivante le réveille en
+  30 à 50 secondes. Si vous montrez le site à quelqu’un, ouvrez-le une minute avant.
+- **La base gratuite expire au bout de 30 jours.** Render prévient par email. Passez la
+  base en payant (autour de 7 $/mois) avant l’échéance, sinon les données sont perdues.
+- Ces deux limites disparaissent avec le forfait payant du service web (autour de 7 $/mois).
 
 ---
 
-## 6. Brancher le paiement par carte (plus tard)
+## 6. Travailler en local
 
-1. Compte sur https://stripe.com, vérification d’identité, puis *Développeurs → Clés
-   API*.
-2. Ajoutez `STRIPE_SECRET_KEY` et `STRIPE_PUBLIC_KEY` dans les variables Vercel.
-3. Activez la case *Proposer la carte bancaire* dans *Paramètres*.
+Le projet utilise désormais PostgreSQL partout, y compris chez vous. Le plus simple est
+de pointer votre machine sur la base Render :
+
+1. Dans Render, ouvrez la base `fntc-db` → copiez **External Database URL**.
+2. Dans le fichier `.env` du projet :
+
+```
+DATABASE_URL="l-url-externe-copiee-chez-render"
+SESSION_SECRET="une-longue-chaine-de-votre-choix"
+```
+
+3. Puis :
+
+```bash
+npm install
+npx prisma migrate deploy
+npm run dev
+```
+
+⚠️ Vous travaillez alors sur la **vraie** base : ce que vous supprimez en local disparaît
+du site en ligne. Pour travailler sans risque, créez une seconde base gratuite sur Render
+et utilisez son URL dans votre `.env`.
+
+---
+
+## 7. Un nom de domaine à vous (facultatif)
+
+Achetez un domaine, puis dans Render : service `fntc` → **Settings → Custom Domains →
+Add**. Render affiche les lignes à recopier chez votre vendeur de domaine. Le certificat
+de sécurité est automatique.
+
+---
+
+## 8. Brancher le paiement par carte (plus tard)
+
+1. Compte sur https://stripe.com, vérification d’identité, puis *Développeurs → Clés API*.
+2. Dans Render : service `fntc` → **Environment** → ajoutez `STRIPE_SECRET_KEY` et
+   `STRIPE_PUBLIC_KEY`.
+3. Cochez *Proposer la carte bancaire* dans *Paramètres*.
 
 Tant que ce n’est pas fait, les clients commandent avec paiement à la livraison ou par
-virement — c’est déjà pleinement fonctionnel.
+virement.
 
 ---
 
@@ -127,10 +130,11 @@ virement — c’est déjà pleinement fonctionnel.
 
 | Symptôme | Cause la plus fréquente |
 |---|---|
-| Page blanche ou erreur 500 après le déploiement | `DATABASE_URL` absente ou fautive dans Vercel |
-| « Session expirée » en boucle dans l’admin | `SESSION_SECRET` non défini dans Vercel |
-| Les produits n’apparaissent pas | Le seed n’a pas tourné sur la base Neon (étape 2) |
-| Le déploiement échoue | Ouvrez l’onglet *Deployments* de Vercel, lisez la dernière ligne rouge du journal |
+| Le déploiement échoue | Ouvrez l’onglet *Logs* de Render, lisez la dernière ligne rouge |
+| Page d’erreur 500 | La base n’a pas été remplie : lancez `npm run db:seed` (étape 3) |
+| « Session expirée » en boucle | `SESSION_SECRET` a changé entre deux déploiements |
+| Le site met 40 secondes à s’ouvrir | Forfait gratuit : le service dormait, c’est normal |
+| Les produits ont disparu | La base gratuite a expiré (30 jours) |
 
-Avant tout `git push`, un réflexe utile : `npm run build && npm test`. Si les deux
+Avant chaque `git push`, un réflexe utile : `npm run build && npm test`. Si les deux
 passent chez vous, le déploiement passera aussi.

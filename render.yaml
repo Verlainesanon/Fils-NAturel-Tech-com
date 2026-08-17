@@ -1,0 +1,29 @@
+# Déploiement Render : un service web Next.js + une base PostgreSQL.
+# Render lit ce fichier au moment du « Blueprint » et crée les deux ressources.
+
+services:
+  - type: web
+    name: fntc
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: npm ci && npx prisma migrate deploy && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fntc-db
+          property: connectionString
+      # Généré une fois par Render, puis conservé : ne pas le changer, sinon
+      # toutes les sessions clients sont invalidées.
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: "20.11.1"
+
+databases:
+  - name: fntc-db
+    plan: free
+    region: oregon

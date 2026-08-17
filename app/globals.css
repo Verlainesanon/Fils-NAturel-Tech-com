@@ -1706,3 +1706,38 @@ select option {
   flex: none;
   padding-inline: 1rem;
 }
+
+/* ------------------------------------------------- feuille de la marque */
+
+/* Le menu reprend la feuille nervurée du logo : discrète au repos, elle
+   s'allume en or au survol et sur la page active. */
+.nav-vitrine a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav-vitrine a svg {
+  color: var(--gold-deep);
+  flex: none;
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.nav-vitrine a:hover svg {
+  color: var(--gold);
+  transform: rotate(-12deg) scale(1.08);
+}
+
+/* Corde tressée du logo, en fin d'en-tête. */
+.tresse-entete {
+  display: block;
+  width: 100%;
+  height: 6px;
+  color: var(--red);
+  opacity: 0.55;
+}
+
+.feuille-section {
+  color: var(--red-lit);
+  flex: none;
+}

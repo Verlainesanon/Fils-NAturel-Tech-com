@@ -5,11 +5,13 @@ administration à quatre rôles.
 
 ## Démarrer le site sur votre ordinateur
 
-Vous avez besoin de Node.js 20 ou plus récent. Dans le dossier du projet :
+Vous avez besoin de Node.js 20 ou plus récent et d'une base PostgreSQL. Le plus
+simple est d'utiliser la base créée sur Render : copiez son « External Database URL »
+dans un fichier `.env` (modèle dans `.env.example`), puis :
 
 ```bash
 npm install          # une seule fois
-npm run db:setup     # crée la base et les données de départ
+npm run db:setup     # crée les tables et les données de départ
 npm run dev          # démarre le site
 ```
 
@@ -23,19 +25,11 @@ http://localhost:3000/admin.
 
 Changez ce mot de passe dès la première connexion, dans *Comptes admin*.
 
-## Montrer le site à quelqu’un
+## Mettre le site en ligne
 
-Sur votre réseau local (même wifi), lancez :
-
-```bash
-npm run build
-npm run start -- -H 0.0.0.0
-```
-
-Puis donnez l’adresse `http://VOTRE-IP:3000`. Pour trouver votre IP, tapez `ipconfig`
-dans un terminal et prenez la ligne « Adresse IPv4 ».
-
-Pour un lien public accessible partout, voir `docs/DEPLOIEMENT.md`.
+Le projet est prêt pour **Render** : le fichier `render.yaml` décrit le site et sa base
+de données, Render fait le reste. Marche à suivre complète dans
+`docs/DEPLOIEMENT.md`.
 
 ## Ce que contient le site
 
@@ -92,6 +86,6 @@ npm run db:studio  # explorer la base dans le navigateur
 
 ## Technique
 
-Next.js 14 (App Router) · TypeScript · Prisma · SQLite en local, PostgreSQL en ligne ·
+Next.js 14 (App Router) · TypeScript · Prisma · PostgreSQL ·
 Tailwind + design system maison · Vitest. Mots de passe hachés avec scrypt, sessions en
 cookie httpOnly, toute action modifiante journalisée.

@@ -1,12 +1,12 @@
-// Schéma FNTC. SQLite en développement : pas d'enum ni de tableau natif,
-// les valeurs contraintes sont des String documentées et les listes du JSON.
+// Schema FNTC pour PostgreSQL. Les valeurs contraintes sont des String
+// documentees, les listes des chaines JSON : simple et portable.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
