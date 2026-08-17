@@ -6,6 +6,7 @@ import { prisma } from '@/lib/db'
 import { detaillerPanier, viderPanier, ecrireCodePromo } from '@/lib/cart'
 import { clientIdActuel } from '@/lib/auth'
 import { lireReglages, entier } from '@/lib/settings'
+import { lireDevises, deviseChoisie } from '@/lib/devises'
 
 function numeroCommande(): string {
   const jour = new Date().toISOString().slice(2, 10).replace(/-/g, '')
@@ -66,6 +67,7 @@ export async function passerCommande(formData: FormData) {
 
   const numero = numeroCommande()
   const jetonInvite = randomBytes(16).toString('hex')
+  const devise = deviseChoisie(await lireDevises())
 
   const commande = await prisma.$transaction(async (tx) => {
     const creee = await tx.order.create({
@@ -83,6 +85,8 @@ export async function passerCommande(formData: FormData) {
         livraisonCentimes: panier.livraisonCentimes,
         totalCentimes: panier.totalCentimes,
         promoId: panier.promo?.id ?? null,
+        deviseCode: devise.code,
+        tauxApplique: devise.taux,
         modePaiement: mode,
         statutPaiement: 'en_attente',
         statutTraitement: 'nouvelle',

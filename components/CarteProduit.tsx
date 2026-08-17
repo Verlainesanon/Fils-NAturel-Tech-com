@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { formaterPrix, prixEffectif, parserJson } from '@/lib/format'
+import { prixEffectif, parserJson } from '@/lib/format'
 import type { Product } from '@prisma/client'
+import type { Affichage } from '@/lib/affichage'
 
 /** Dessin technique par défaut, quand le produit n'a pas encore de photo. */
 function Croquis() {
@@ -17,7 +18,8 @@ function Croquis() {
   )
 }
 
-export default function CarteProduit({ produit, symbole }: { produit: Product; symbole: string }) {
+export default function CarteProduit({ produit, affichage }: { produit: Product; affichage: Affichage }) {
+  const { prix, t } = affichage
   const { centimes, enPromo } = prixEffectif(produit)
   const images = parserJson<string[]>(produit.images, [])
   const rupture = produit.stock <= 0
@@ -28,8 +30,8 @@ export default function CarteProduit({ produit, symbole }: { produit: Product; s
     <Link href={`/produit/${produit.slug}`} className={`prod ${rupture ? 'out' : ''}`}>
       <div className="p-top">
         <span className="ref">{produit.reference ?? produit.marque ?? 'FNTC'}</span>
-        {enPromo && <span className="tag promo">Promo</span>}
-        {rupture && <span className="tag rupt">Rupture</span>}
+        {enPromo && <span className="tag promo">{t('produit.promo')}</span>}
+        {rupture && <span className="tag rupt">{t('produit.rupture')}</span>}
       </div>
 
       <div className="draw">
@@ -47,8 +49,8 @@ export default function CarteProduit({ produit, symbole }: { produit: Product; s
 
         <div className={`meter stock ${stockBas ? 'low' : ''}`}>
           <span className="mk">
-            <span>Stock</span>
-            <b>{rupture ? 'épuisé' : `${produit.stock} pièces`}</b>
+            <span>{t('produit.stock')}</span>
+            <b>{rupture ? t('produit.epuise') : `${produit.stock} ${t('produit.pieces')}`}</b>
           </span>
           <span className="bar">
             <i style={{ '--v': remplissage } as React.CSSProperties} />
@@ -57,10 +59,10 @@ export default function CarteProduit({ produit, symbole }: { produit: Product; s
 
         <div className="p-foot">
           <span className="price">
-            <b>{formaterPrix(centimes, symbole)}</b>
-            {enPromo && <s>{formaterPrix(produit.prixCentimes, symbole)}</s>}
+            <b>{prix(centimes)}</b>
+            {enPromo && <s>{prix(produit.prixCentimes)}</s>}
           </span>
-          <span className="go">Voir →</span>
+          <span className="go">{t('produit.voir')} →</span>
         </div>
       </div>
     </Link>

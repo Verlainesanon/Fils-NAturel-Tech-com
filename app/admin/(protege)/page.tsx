@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import { formaterPrix, formaterDateHeure } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Tableau de bord' }
@@ -14,8 +14,7 @@ function debutDe(joursEnArriere: number): Date {
 }
 
 export default async function TableauDeBord() {
-  const reglages = await lireReglages()
-  const symbole = reglages.DEVISE_SYMBOLE
+  const symbole = deviseDeBase(await lireDevises()).symbole
 
   const [ventesJour, ventes7, ventes30, aTraiter, ruptures, stockBas, messages, dernieres, clients] =
     await Promise.all([

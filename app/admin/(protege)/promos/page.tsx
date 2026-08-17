@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import { formaterPrix, formaterDate } from '@/lib/format'
 import { enregistrerPromo, basculerPromo } from '@/app/admin/actions'
 import FormulaireAdmin from '@/components/admin/FormulaireAdmin'
@@ -8,12 +8,11 @@ import FormulaireAdmin from '@/components/admin/FormulaireAdmin'
 export const metadata: Metadata = { title: 'Promotions' }
 
 export default async function Promotions({ searchParams }: { searchParams: { modifier?: string } }) {
-  const [promos, categories, reglages] = await Promise.all([
+  const [promos, categories] = await Promise.all([
     prisma.promo.findMany({ orderBy: { creeLe: 'desc' } }),
     prisma.category.findMany({ orderBy: { ordre: 'asc' } }),
-    lireReglages(),
   ])
-  const symbole = reglages.DEVISE_SYMBOLE
+  const symbole = deviseDeBase(await lireDevises()).symbole
   const enEdition = promos.find((p) => p.id === searchParams.modifier) ?? null
 
   const decrire = (promo: (typeof promos)[number]) =>

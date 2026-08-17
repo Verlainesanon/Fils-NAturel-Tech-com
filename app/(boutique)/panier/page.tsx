@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { detaillerPanier } from '@/lib/cart'
-import { formaterPrix } from '@/lib/format'
+import { contexteAffichage } from '@/lib/affichage'
 import { changerQuantite, retirerDuPanier, appliquerCodePromo } from '@/app/actions/panier'
 
 export const metadata: Metadata = { title: 'Panier' }
 
 export default async function Panier({ searchParams }: { searchParams: { promo?: string } }) {
   const panier = await detaillerPanier()
-  const symbole = panier.reglages.DEVISE_SYMBOLE
+  const { prix, t } = await contexteAffichage()
 
   if (panier.lignes.length === 0) {
     return (
@@ -54,9 +54,9 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
                   </Link>
                   <span className="mono">{ligne.reference ?? ''}</span>
                   <span className="panier-prix-unite lede">
-                    {formaterPrix(ligne.prixCentimes, symbole)} l’unité
+                    {prix(ligne.prixCentimes)} l’unité
                     {ligne.prixBarreCentimes && (
-                      <s> {formaterPrix(ligne.prixBarreCentimes, symbole)}</s>
+                      <s> {prix(ligne.prixBarreCentimes)}</s>
                     )}
                   </span>
                 </div>
@@ -74,10 +74,10 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
                 </div>
 
                 <div className="panier-total-ligne">
-                  <strong>{formaterPrix(ligne.totalCentimes, symbole)}</strong>
+                  <strong>{prix(ligne.totalCentimes)}</strong>
                   <form action={retirerDuPanier.bind(null, ligne.produitId)}>
                     <button type="submit" className="lien-retirer">
-                      Retirer
+                      {t('panier.retirer')}
                     </button>
                   </form>
                 </div>
@@ -86,30 +86,30 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
           </div>
 
           <aside className="panier-resume card-l">
-            <h2 className="mono">Récapitulatif</h2>
+            <h2 className="mono">{t('panier.recapitulatif')}</h2>
 
             <div className="ligne-resume">
-              <span>Sous-total</span>
-              <span>{formaterPrix(panier.sousTotalCentimes, symbole)}</span>
+              <span>{t('panier.sousTotal')}</span>
+              <span>{prix(panier.sousTotalCentimes)}</span>
             </div>
 
             {panier.remiseCentimes > 0 && (
               <div className="ligne-resume or">
                 <span>Remise {panier.promo ? `(${panier.promo.code})` : ''}</span>
-                <span>−{formaterPrix(panier.remiseCentimes, symbole)}</span>
+                <span>−{prix(panier.remiseCentimes)}</span>
               </div>
             )}
 
             <div className="ligne-resume">
-              <span>Livraison</span>
+              <span>{t('panier.livraison')}</span>
               <span>
-                {panier.livraisonCentimes === 0 ? 'Offerte' : formaterPrix(panier.livraisonCentimes, symbole)}
+                {panier.livraisonCentimes === 0 ? t('panier.offerte') : prix(panier.livraisonCentimes)}
               </span>
             </div>
 
             <div className="ligne-resume total">
-              <span>Total</span>
-              <span>{formaterPrix(panier.totalCentimes, symbole)}</span>
+              <span>{t('panier.total')}</span>
+              <span>{prix(panier.totalCentimes)}</span>
             </div>
 
             <form action={appliquerCodePromo} className="forme-promo">
@@ -128,10 +128,10 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
             </form>
 
             <Link href="/commande" className="btn btn-sig" style={{ width: '100%' }}>
-              Passer la commande
+              {t('panier.commander')}
             </Link>
             <Link href="/boutique" className="lien-souligne" style={{ alignSelf: 'center' }}>
-              Continuer mes achats
+              {t('panier.continuer')}
             </Link>
           </aside>
         </div>

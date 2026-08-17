@@ -2,10 +2,11 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
+import { contexteAffichage } from '@/lib/affichage'
 import { clientActuel } from '@/lib/auth'
 import { deconnecter } from '@/app/actions/compte'
 import { lireReglages } from '@/lib/settings'
-import { formaterPrix, formaterDate } from '@/lib/format'
+import { formaterDate } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Mon compte' }
 
@@ -28,7 +29,7 @@ export default async function EspaceCompte() {
     }),
     lireReglages(),
   ])
-  const symbole = reglages.DEVISE_SYMBOLE
+  const { prix } = await contexteAffichage()
 
   return (
     <section className="sec">
@@ -90,7 +91,7 @@ export default async function EspaceCompte() {
                   {c.lignes.length} article{c.lignes.length > 1 ? 's' : ''}
                 </span>
                 <span className={`etiquette etat-${c.statutTraitement}`}>{c.statutTraitement}</span>
-                <strong>{formaterPrix(c.totalCentimes, symbole)}</strong>
+                <strong>{prix(c.totalCentimes)}</strong>
                 <Link className="lien-souligne" href={`/commande/suivi?numero=${c.numero}&email=${c.emailContact}`}>
                   Suivre
                 </Link>

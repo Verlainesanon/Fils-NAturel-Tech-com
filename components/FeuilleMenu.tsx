@@ -4,6 +4,8 @@
  * emplacements sont dessinés à la main ; au-delà, les rayons suivants sont
  * listés sous la feuille.
  */
+import type { Affichage } from '@/lib/affichage'
+
 export type Rayon = { slug: string; nom: string; nombre: number }
 
 const EMPLACEMENTS = [
@@ -13,7 +15,16 @@ const EMPLACEMENTS = [
   { branche: 'M160,170 L160,222 L120,222', x: 118, y: 222, texte: 106, ancre: 'end' as const, retard: '2.85s' },
 ]
 
-export default function FeuilleMenu({ rayons, total }: { rayons: Rayon[]; total: number }) {
+export default function FeuilleMenu({
+  rayons,
+  total,
+  affichage,
+}: {
+  rayons: Rayon[]
+  total: number
+  affichage: Affichage
+}) {
+  const { t } = affichage
   const places = rayons.slice(0, EMPLACEMENTS.length)
   const surplus = rayons.slice(EMPLACEMENTS.length)
 
@@ -67,7 +78,7 @@ export default function FeuilleMenu({ rayons, total }: { rayons: Rayon[]; total:
                   {rayon.nom}
                 </text>
                 <text className="padcount" x={e.texte} y={e.y + 9} textAnchor={e.ancre}>
-                  {rayon.nombre} réf.
+                  {rayon.nombre} {t('rayons.references')}
                 </text>
             </a>
           )
@@ -79,7 +90,7 @@ export default function FeuilleMenu({ rayons, total }: { rayons: Rayon[]; total:
           <path className="dim" d="M76,306 l7,-3 v6 z M784,306 l-7,-3 v6 z" stroke="none" fill="var(--ink-3)" opacity=".5" />
           <rect x="380" y="298" width="100" height="16" fill="var(--bone)" />
           <text className="dimtxt" x="430" y="310" textAnchor="middle">
-            {total} RÉFÉRENCES
+            {total} {t('rayons.references').toUpperCase()}
           </text>
         </g>
       </svg>
@@ -97,8 +108,8 @@ export default function FeuilleMenu({ rayons, total }: { rayons: Rayon[]; total:
 
       <p className="leafhint">
         {surplus.length > 0
-          ? `Aussi : ${surplus.map((r) => r.nom).join(' · ')}`
-          : 'Chaque pastille est un rayon — touchez pour l’ouvrir'}
+          ? `${t('rayons.aussi')} : ${surplus.map((r) => r.nom).join(' · ')}`
+          : t('rayons.aide')}
       </p>
     </div>
   )

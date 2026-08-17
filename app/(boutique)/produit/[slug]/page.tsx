@@ -2,8 +2,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
+import { contexteAffichage } from '@/lib/affichage'
 import { lireReglages } from '@/lib/settings'
-import { formaterPrix, prixEffectif, parserJson } from '@/lib/format'
+import { prixEffectif, parserJson } from '@/lib/format'
 import AjoutPanier from '@/components/AjoutPanier'
 import Galerie from '@/components/Galerie'
 import CarteProduit from '@/components/CarteProduit'
@@ -28,8 +29,8 @@ export default async function FicheProduit({ params }: { params: { slug: string 
   const produit = await chargerProduit(params.slug)
   if (!produit) notFound()
 
-  const reglages = await lireReglages()
-  const symbole = reglages.DEVISE_SYMBOLE
+  const [reglages, affichage] = await Promise.all([lireReglages(), contexteAffichage()])
+  const { prix, t } = affichage
   const { centimes, enPromo } = prixEffectif(produit)
   const images = parserJson<string[]>(produit.images, [])
   const caracteristiques = parserJson<{ cle: string; valeur: string }[]>(produit.caracteristiques, [])
@@ -46,7 +47,7 @@ export default async function FicheProduit({ params }: { params: { slug: string 
       <section className="sec">
         <div className="wrap">
           <nav className="fil-ariane">
-            <Link href="/boutique">Catalogue</Link>
+            <Link href="/boutique">{t('nav.catalogue')}</Link>
             <span>/</span>
             <Link href={`/boutique?categorie=${produit.categorie.slug}`}>{produit.categorie.nom}</Link>
             <span>/</span>
@@ -72,9 +73,9 @@ export default async function FicheProduit({ params }: { params: { slug: string 
               )}
 
               <div className="pblock">
-                <b>{formaterPrix(centimes, symbole)}</b>
-                {enPromo && <s>{formaterPrix(produit.prixCentimes, symbole)}</s>}
-                {enPromo && <span className="tag promo">Promo</span>}
+                <b>{prix(centimes)}</b>
+                {enPromo && <s>{prix(produit.prixCentimes)}</s>}
+                {enPromo && <span className="tag promo">{t('produit.promo')}</span>}
               </div>
 
               <p className="mono" style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -82,9 +83,13 @@ export default async function FicheProduit({ params }: { params: { slug: string 
                   className={`temoin ${rupture ? 'temoin-vide' : stockBas ? 'temoin-bas' : 'temoin-ok'}`}
                   aria-hidden
                 />
-                {rupture ? 'Épuisé' : stockBas ? `Plus que ${produit.stock} en stock` : `${produit.stock} en stock`}
+                {rupture
+                  ? t('produit.epuise')
+                  : stockBas
+                    ? `${t('produit.plusQue')} ${produit.stock} ${t('produit.enStock')}`
+                    : `${produit.stock} ${t('produit.enStock')}`}
                 {' · '}
-                Livraison {reglages.LIVRAISON_DELAI}
+                {t('produit.livraison')} {reglages.LIVRAISON_DELAI}
               </p>
 
               <AjoutPanier produitId={produit.id} stock={produit.stock} />
@@ -103,7 +108,7 @@ export default async function FicheProduit({ params }: { params: { slug: string 
               )}
 
               <div style={{ marginTop: '1.9rem' }}>
-                <span className="eyebrow">Description</span>
+                <span className="eyebrow">{t('produit.description')}</span>
                 <p className="lede" style={{ marginTop: '0.8rem', maxWidth: 'none' }}>
                   {produit.description}
                 </p>
@@ -117,12 +122,12 @@ export default async function FicheProduit({ params }: { params: { slug: string 
         <section className="sec">
           <div className="wrap">
             <div className="sec-h">
-              <span className="eyebrow">Même rayon</span>
-              <h2>À regarder aussi</h2>
+              <span className="eyebrow">{t('produit.memeRayon')}</span>
+              <h2>{t('produit.aussi')}</h2>
             </div>
             <div className="grid">
               {similaires.map((p) => (
-                <CarteProduit key={p.id} produit={p} symbole={symbole} />
+                <CarteProduit key={p.id} produit={p} affichage={affichage} />
               ))}
             </div>
           </div>

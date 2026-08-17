@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import { formaterPrix, formaterDateHeure } from '@/lib/format'
 import { changerStatutCommande, changerPaiementCommande, noterCommande } from '@/app/admin/actions'
 import FormulaireAdmin from '@/components/admin/FormulaireAdmin'
@@ -15,9 +15,7 @@ export default async function DetailCommande({ params }: { params: { id: string 
     include: { lignes: true, evenements: { orderBy: { creeLe: 'desc' } }, client: true, promo: true },
   })
   if (!commande) notFound()
-
-  const reglages = await lireReglages()
-  const symbole = reglages.DEVISE_SYMBOLE
+  const symbole = deviseDeBase(await lireDevises()).symbole
 
   return (
     <>

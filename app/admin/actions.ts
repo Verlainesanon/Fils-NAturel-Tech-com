@@ -8,6 +8,7 @@ import { journaliser } from '@/lib/audit'
 import { ecrireReglages, type Reglages } from '@/lib/settings'
 import { slugifier } from '@/lib/format'
 import { estRole } from '@/lib/roles'
+import { DEVISES_DEFAUT } from '@/lib/devises'
 
 const texte = (f: FormData, cle: string) => String(f.get(cle) ?? '').trim()
 const nombre = (f: FormData, cle: string, defaut = 0) => {
@@ -451,6 +452,63 @@ export async function supprimerBanniere(id: string) {
   await prisma.banner.delete({ where: { id } })
   await journaliser(admin.nom, 'suppression', `Banner#${id}`)
   revalidatePath('/admin/bannieres')
+  revalidatePath('/', 'layout')
+}
+
+// ------------------------------------------------------------------ devises
+
+export async function enregistrerDevise(formData: FormData) {
+  const admin = await exigerRole('proprietaire')
+  const code = texte(formData, 'code').toUpperCase()
+  if (code.length < 2) return { erreur: 'Code de devise trop court.' }
+
+  const taux = Number.parseFloat(texte(formData, 'taux').replace(',', '.'))
+  if (!Number.isFinite(taux) || taux <= 0) return { erreur: 'Le taux doit être un nombre positif.' }
+
+  const donnees = {
+    nom: texte(formData, 'nom'),
+    symbole: texte(formData, 'symbole'),
+    taux,
+    decimales: nombre(formData, 'decimales', 2),
+    ordre: nombre(formData, 'ordre'),
+    actif: coche(formData, 'actif'),
+  }
+
+  // Première écriture : on fige aussi les devises par défaut, sinon la table
+  // resterait vide et les taux ne seraient nulle part.
+  const existantes = await prisma.devise.count()
+  if (existantes === 0) {
+    for (const d of DEVISES_DEFAUT) {
+      await prisma.devise.create({ data: d })
+    }
+  }
+
+  await prisma.devise.upsert({
+    where: { code },
+    update: donnees,
+    create: { code, base: false, ...donnees },
+  })
+  await journaliser(admin.nom, 'modification', `Devise#${code}`, `taux ${taux}`)
+  revalidatePath('/admin/devises')
+  revalidatePath('/', 'layout')
+}
+
+export async function definirDeviseDeBase(code: string) {
+  const admin = await exigerRole('proprietaire')
+  await prisma.devise.updateMany({ data: { base: false } })
+  await prisma.devise.update({ where: { code }, data: { base: true, taux: 1 } })
+  await journaliser(admin.nom, 'modification', `Devise#${code}`, 'devise de base')
+  revalidatePath('/admin/devises')
+  revalidatePath('/', 'layout')
+}
+
+export async function supprimerDevise(code: string) {
+  const admin = await exigerRole('proprietaire')
+  const devise = await prisma.devise.findUnique({ where: { code } })
+  if (devise?.base) return { erreur: 'La devise de base ne peut pas être retirée.' }
+  await prisma.devise.delete({ where: { code } })
+  await journaliser(admin.nom, 'suppression', `Devise#${code}`)
+  revalidatePath('/admin/devises')
   revalidatePath('/', 'layout')
 }
 

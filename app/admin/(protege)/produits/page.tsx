@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import { formaterPrix, prixEffectif, parserJson } from '@/lib/format'
 import { archiverProduit, publierProduit } from '@/app/admin/actions'
 import FormulaireAdmin from '@/components/admin/FormulaireAdmin'
@@ -24,12 +24,11 @@ export default async function ListeProduits({
       : {}),
   }
 
-  const [produits, categories, reglages] = await Promise.all([
+  const [produits, categories] = await Promise.all([
     prisma.product.findMany({ where, orderBy: { majLe: 'desc' }, include: { categorie: true } }),
     prisma.category.findMany({ orderBy: { ordre: 'asc' } }),
-    lireReglages(),
   ])
-  const symbole = reglages.DEVISE_SYMBOLE
+  const symbole = deviseDeBase(await lireDevises()).symbole
 
   return (
     <>

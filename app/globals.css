@@ -136,6 +136,25 @@ header nav a[aria-current='page']::after, header nav a:hover::after { transform:
 
 .hd-r { display: flex; align-items: center; gap: 0.6rem; }
 
+/* Langue et devise : discrets, à gauche des boutons. */
+.preferences { display: flex; gap: 0.35rem; }
+.preferences select {
+  width: auto;
+  padding: 0.5rem 0.7rem;
+  border-radius: 99px;
+  background: none;
+  border: 1px solid var(--rule);
+  font-size: 0.78rem;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.preferences select:hover { color: var(--ink); border-color: var(--ink-3); }
+.preferences[data-en-cours] { opacity: 0.5; }
+
+@media (max-width: 700px) {
+  .preferences select { min-height: 40px; font-size: 0.8rem; }
+}
+
 /* ----------------------------------------------------------------- boutons */
 
 .btn {

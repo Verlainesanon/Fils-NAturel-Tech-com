@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import { formaterPrix, formaterDate } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Clients' }
@@ -16,16 +16,15 @@ export default async function Clients({ searchParams }: { searchParams: { q?: st
       : {}),
   }
 
-  const [clients, reglages] = await Promise.all([
+  const [clients] = await Promise.all([
     prisma.customer.findMany({
       where,
       orderBy: { creeLe: 'desc' },
       take: 100,
       include: { commandes: { select: { totalCentimes: true, statutPaiement: true } } },
     }),
-    lireReglages(),
   ])
-  const symbole = reglages.DEVISE_SYMBOLE
+  const symbole = deviseDeBase(await lireDevises()).symbole
 
   return (
     <>

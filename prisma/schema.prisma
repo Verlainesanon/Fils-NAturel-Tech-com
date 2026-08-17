@@ -147,6 +147,8 @@ model Order {
   suivi          String?
   noteInterne    String?
   jetonInvite    String      @unique // permet à un invité de retrouver sa commande
+  deviseCode     String      @default("HTG") // devise affichée au client
+  tauxApplique   Float       @default(1)     // taux au moment de la commande
   lignes         OrderItem[]
   evenements     OrderEvent[]
   creeLe         DateTime    @default(now())
@@ -245,6 +247,20 @@ model Banner {
   fin      DateTime?
   actif    Boolean   @default(true)
   ordre    Int       @default(0)
+}
+
+/// Devises acceptées par la boutique. Les prix sont stockés une seule fois,
+/// dans la devise de base ; les autres sont calculées avec leur taux.
+model Devise {
+  code      String   @id            // HTG, USD, EUR…
+  nom       String
+  symbole   String
+  taux      Float    @default(1)    // 1 unité de devise de base = taux unités d'ici
+  decimales Int      @default(2)
+  base      Boolean  @default(false)
+  actif     Boolean  @default(true)
+  ordre     Int      @default(0)
+  majLe     DateTime @updatedAt
 }
 
 model Setting {

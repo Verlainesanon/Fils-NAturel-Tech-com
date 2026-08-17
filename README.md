@@ -39,6 +39,7 @@ de données, Render fait le reste. Marche à suivre complète dans
 - Panier, codes promo, commande sans inscription, page de suivi
 - Compte client optionnel avec badge de fidélité (bronze, argent, or)
 - Chat support, ouvrable sans compte, relevé depuis l’administration
+- Langue détectée automatiquement (français, kreyòl, anglais) et devise au choix du visiteur
 
 **Administration** (`/admin`)
 
@@ -55,7 +56,8 @@ de données, Render fait le reste. Marche à suivre complète dans
 | Textes du site | Modifier tous les textes de la vitrine sans toucher au code |
 | Médiathèque | Images réutilisables |
 | Bannières | Bandeau promotionnel daté |
-| Paramètres | Identité, livraison, paiement, devise, paliers de fidélité |
+| Paramètres | Identité, livraison, paiement, paliers de fidélité |
+| Devises et taux | Devise de base, taux de change, devises proposées au visiteur |
 | Comptes admin | Créer des comptes, attribuer un rôle, réinitialiser un mot de passe |
 | Journal d’audit | Qui a fait quoi, quand — non effaçable |
 

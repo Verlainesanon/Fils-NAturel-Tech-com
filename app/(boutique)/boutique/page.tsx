@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { contexteAffichage } from '@/lib/affichage'
 import CarteProduit from '@/components/CarteProduit'
 
 export const metadata: Metadata = { title: 'Catalogue' }
@@ -26,7 +26,7 @@ const TRIS: Record<string, Prisma.ProductOrderByWithRelationInput> = {
 }
 
 export default async function Catalogue({ searchParams }: { searchParams: Params }) {
-  const reglages = await lireReglages()
+  const affichage = await contexteAffichage()
   const categories = await prisma.category.findMany({
     where: { visible: true },
     orderBy: { ordre: 'asc' },
@@ -162,7 +162,7 @@ export default async function Catalogue({ searchParams }: { searchParams: Params
         ) : (
           <div className="grid">
             {produits.map((p) => (
-              <CarteProduit key={p.id} produit={p} symbole={reglages.DEVISE_SYMBOLE} />
+              <CarteProduit key={p.id} produit={p} affichage={affichage} />
             ))}
           </div>
         )}

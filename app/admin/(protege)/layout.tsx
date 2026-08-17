@@ -51,6 +51,7 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
         ...(peut(admin.role, 'proprietaire')
           ? [
               { href: '/admin/parametres', libelle: 'Paramètres' },
+              { href: '/admin/devises', libelle: 'Devises et taux' },
               { href: '/admin/comptes', libelle: 'Comptes admin' },
               { href: '/admin/audit', libelle: 'Journal d’audit' },
             ]

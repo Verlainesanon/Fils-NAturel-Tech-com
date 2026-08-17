@@ -2,8 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
-import { formaterPrix } from '@/lib/format'
+import { contexteAffichage } from '@/lib/affichage'
 
 export const metadata: Metadata = { title: 'Commande confirmée' }
 
@@ -20,8 +19,7 @@ export default async function Merci({
   })
   if (!commande || commande.jetonInvite !== searchParams.jeton) notFound()
 
-  const reglages = await lireReglages()
-  const symbole = reglages.DEVISE_SYMBOLE
+  const { prix } = await contexteAffichage()
 
   return (
     <section className="sec">
@@ -39,12 +37,12 @@ export default async function Merci({
               <span>
                 {l.nomProduit} <span className="mono">×{l.quantite}</span>
               </span>
-              <span>{formaterPrix(l.prixCentimes * l.quantite, symbole)}</span>
+              <span>{prix(l.prixCentimes * l.quantite)}</span>
             </div>
           ))}
           <div className="ligne-resume total">
             <span>Total</span>
-            <span>{formaterPrix(commande.totalCentimes, symbole)}</span>
+            <span>{prix(commande.totalCentimes)}</span>
           </div>
           <div className="ligne-resume">
             <span>Livraison</span>

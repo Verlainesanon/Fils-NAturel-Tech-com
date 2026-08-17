@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
+import { contexteAffichage } from '@/lib/affichage'
 import { lireReglages } from '@/lib/settings'
 import { lireBlocs, bloc, blocAlt } from '@/lib/content'
-import { formaterPrix } from '@/lib/format'
 import CarteProduit from '@/components/CarteProduit'
 import FeuilleMenu, { type Rayon } from '@/components/FeuilleMenu'
 
@@ -31,7 +31,8 @@ export default async function Accueil() {
       prisma.order.count({ where: { statutTraitement: 'livree' } }),
     ])
 
-  const symbole = reglages.DEVISE_SYMBOLE
+  const affichage = await contexteAffichage()
+  const { prix, t } = affichage
   const vedettes = misEnAvant.length > 0 ? misEnAvant : nouveautes.slice(0, 4)
   const rayons: Rayon[] = categories.map((c) => ({ slug: c.slug, nom: c.nom, nombre: c._count.produits }))
   // Le dernier mot du titre passe en rouge, comme dans la maquette.
@@ -60,20 +61,20 @@ export default async function Accueil() {
               {bloc(blocs, 'accueil.hero.bouton')}
             </Link>
             <Link className="btn btn-line" href="/boutique?tri=promo">
-              Voir les spéciaux
+              {t('hero.speciaux')}
             </Link>
           </div>
 
-          <FeuilleMenu rayons={rayons} total={totalProduits} />
+          <FeuilleMenu rayons={rayons} total={totalProduits} affichage={affichage} />
         </div>
       </section>
 
       <div className="wrap">
         <div className="strip">
-          <span>Testé avant vente</span>
-          <span>Commande sans compte</span>
-          <span>Livraison {reglages.LIVRAISON_DELAI}</span>
-          <span>Chat relevé par l’équipe</span>
+          <span>{t('strip.teste')}</span>
+          <span>{t('strip.sansCompte')}</span>
+          <span>{t('strip.livraison')} {reglages.LIVRAISON_DELAI}</span>
+          <span>{t('strip.chat')}</span>
         </div>
       </div>
 
@@ -97,26 +98,26 @@ export default async function Accueil() {
       <section className="sec">
         <div className="wrap">
           <div className="sec-h">
-            <span className="eyebrow">Sélection</span>
-            <h2>Ce que nous recommandons</h2>
+            <span className="eyebrow">{t('accueil.selection')}</span>
+            <h2>{t('accueil.recommandons')}</h2>
             <p className="lede">
               Peu de références, toutes connues. Le stock affiché est celui de l’atelier, à la pièce près.
             </p>
           </div>
 
           {vedettes.length === 0 ? (
-            <p className="empty">Le catalogue arrive. Revenez très vite.</p>
+            <p className="empty">{t('accueil.catalogueVide')}</p>
           ) : (
             <div className="grid">
               {vedettes.map((p) => (
-                <CarteProduit key={p.id} produit={p} symbole={symbole} />
+                <CarteProduit key={p.id} produit={p} affichage={affichage} />
               ))}
             </div>
           )}
 
           <div className="hero-cta">
             <Link className="btn btn-line" href="/boutique">
-              Tout le catalogue
+              {t('accueil.toutCatalogue')}
             </Link>
           </div>
         </div>
@@ -157,19 +158,19 @@ export default async function Accueil() {
           <div className="proof">
             <div>
               <b>{totalProduits}</b>
-              <span>références au catalogue</span>
+              <span>{t('accueil.references')}</span>
             </div>
             <div>
               <b>{categories.length}</b>
-              <span>rayons</span>
+              <span>{t('accueil.rayons')}</span>
             </div>
             <div>
               <b>{commandesLivrees}</b>
-              <span>commandes livrées</span>
+              <span>{t('accueil.commandesLivrees')}</span>
             </div>
             <div>
-              <b>{formaterPrix(Number(reglages.LIVRAISON_GRATUITE_DES), symbole)}</b>
-              <span>livraison offerte à partir de</span>
+              <b>{prix(Number(reglages.LIVRAISON_GRATUITE_DES))}</b>
+              <span>{t('accueil.livraisonOfferte')}</span>
             </div>
           </div>
         </div>
@@ -178,7 +179,7 @@ export default async function Accueil() {
       <section className="sec">
         <div className="wrap">
           <div className="sec-h">
-            <span className="eyebrow">À propos</span>
+            <span className="eyebrow">{t('accueil.apropos')}</span>
             <h2>{bloc(blocs, 'apropos.titre')}</h2>
             <p className="lede">{bloc(blocs, 'apropos.corps')}</p>
           </div>

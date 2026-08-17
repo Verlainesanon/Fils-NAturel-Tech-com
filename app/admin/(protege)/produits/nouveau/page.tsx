@@ -1,14 +1,13 @@
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import FormulaireProduit from '@/components/admin/FormulaireProduit'
 
 export const metadata: Metadata = { title: 'Nouveau produit' }
 
 export default async function NouveauProduit() {
-  const [categories, reglages] = await Promise.all([
+  const [categories] = await Promise.all([
     prisma.category.findMany({ orderBy: { ordre: 'asc' } }),
-    lireReglages(),
   ])
 
   return (
@@ -20,7 +19,7 @@ export default async function NouveauProduit() {
         </div>
       </header>
 
-      <FormulaireProduit produit={null} categories={categories} symbole={reglages.DEVISE_SYMBOLE} />
+      <FormulaireProduit produit={null} categories={categories} symbole={deviseDeBase(await lireDevises()).symbole} />
     </>
   )
 }

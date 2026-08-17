@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { detaillerPanier } from '@/lib/cart'
+import { contexteAffichage } from '@/lib/affichage'
 import { clientActuel } from '@/lib/auth'
-import { formaterPrix } from '@/lib/format'
 import FormulaireCommande from '@/components/FormulaireCommande'
 
 export const metadata: Metadata = { title: 'Commande' }
@@ -13,7 +13,7 @@ export default async function PageCommande() {
   if (panier.lignes.length === 0) redirect('/panier')
 
   const client = await clientActuel()
-  const symbole = panier.reglages.DEVISE_SYMBOLE
+  const { prix } = await contexteAffichage()
 
   return (
     <section className="sec">
@@ -42,27 +42,27 @@ export default async function PageCommande() {
                 <span>
                   {l.nom} <span className="mono">×{l.quantite}</span>
                 </span>
-                <span>{formaterPrix(l.totalCentimes, symbole)}</span>
+                <span>{prix(l.totalCentimes)}</span>
               </div>
             ))}
 
             {panier.remiseCentimes > 0 && (
               <div className="ligne-resume or">
                 <span>Remise</span>
-                <span>−{formaterPrix(panier.remiseCentimes, symbole)}</span>
+                <span>−{prix(panier.remiseCentimes)}</span>
               </div>
             )}
 
             <div className="ligne-resume">
               <span>Livraison</span>
               <span>
-                {panier.livraisonCentimes === 0 ? 'Offerte' : formaterPrix(panier.livraisonCentimes, symbole)}
+                {panier.livraisonCentimes === 0 ? 'Offerte' : prix(panier.livraisonCentimes)}
               </span>
             </div>
 
             <div className="ligne-resume total">
               <span>Total</span>
-              <span>{formaterPrix(panier.totalCentimes, symbole)}</span>
+              <span>{prix(panier.totalCentimes)}</span>
             </div>
 
             <Link href="/panier" className="lien-souligne" style={{ alignSelf: 'center' }}>

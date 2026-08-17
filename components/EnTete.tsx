@@ -1,21 +1,25 @@
 import Link from 'next/link'
-import { prisma } from '@/lib/db'
 import { lirePanier } from '@/lib/cart'
 import { lireReglages } from '@/lib/settings'
 import { clientActuel } from '@/lib/auth'
+import { contexteAffichage } from '@/lib/affichage'
+import { LANGUES } from '@/lib/i18n'
+import SelecteursVisiteur from '@/components/SelecteursVisiteur'
 
 export default async function EnTete() {
-  const [reglages, client] = await Promise.all([lireReglages(), clientActuel()])
+  const [reglages, client, affichage] = await Promise.all([
+    lireReglages(),
+    clientActuel(),
+    contexteAffichage(),
+  ])
   const articles = lirePanier().reduce((t, l) => t + l.quantite, 0)
-  // Chargé pour garder la connexion chaude, et signaler un catalogue vide.
-  await prisma.category.count().catch(() => 0)
-
+  const { t } = affichage
   const [premier, ...reste] = reglages.SITE_NOM.split(' ')
 
   return (
     <header>
       <div className="wrap hd">
-        <Link href="/" className="brand" aria-label={`Accueil ${reglages.SITE_NOM}`}>
+        <Link href="/" className="brand" aria-label={`${t('nav.accueil')} ${reglages.SITE_NOM}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={reglages.SITE_LOGO || '/logo.jpeg'} alt="" />
           <svg className="wordmark" viewBox="0 0 150 26" role="img" aria-label={reglages.SITE_NOM}>
@@ -30,19 +34,28 @@ export default async function EnTete() {
           </svg>
         </Link>
 
-        <nav aria-label="Navigation principale">
-          <Link href="/">Accueil</Link>
-          <Link href="/boutique">Catalogue</Link>
-          <Link href="/boutique?tri=promo">Spéciaux</Link>
-          <Link href="/commande/suivi">Suivi</Link>
+        <nav aria-label={t('nav.catalogue')}>
+          <Link href="/">{t('nav.accueil')}</Link>
+          <Link href="/boutique">{t('nav.catalogue')}</Link>
+          <Link href="/boutique?tri=promo">{t('nav.speciaux')}</Link>
+          <Link href="/commande/suivi">{t('nav.suivi')}</Link>
         </nav>
 
         <div className="hd-r">
+          <SelecteursVisiteur
+            langues={LANGUES.map((l) => ({ code: l.code, libelle: l.nom }))}
+            langueActive={affichage.langue}
+            devises={affichage.devises.map((d) => ({ code: d.code, libelle: `${d.code} ${d.symbole}` }))}
+            deviseActive={affichage.devise.code}
+            libelleLangue={t('langue.choisir')}
+            libelleDevise={t('devise.choisir')}
+          />
+
           <Link className="btn btn-line" href={client ? '/compte' : '/compte/connexion'}>
-            {client ? client.nom.split(' ')[0] : 'Se connecter'}
+            {client ? client.nom.split(' ')[0] : t('nav.connexion')}
           </Link>
           <Link className="btn btn-solid" href="/panier">
-            Panier · {articles}
+            {t('nav.panier')} · {articles}
           </Link>
         </div>
       </div>

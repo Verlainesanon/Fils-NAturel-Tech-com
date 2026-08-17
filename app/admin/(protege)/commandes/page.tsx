@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import { formaterPrix, formaterDateHeure } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Commandes' }
@@ -29,11 +29,10 @@ export default async function Commandes({
       : {}),
   }
 
-  const [commandes, reglages] = await Promise.all([
+  const [commandes] = await Promise.all([
     prisma.order.findMany({ where, orderBy: { creeLe: 'desc' }, take: 100, include: { lignes: true } }),
-    lireReglages(),
   ])
-  const symbole = reglages.DEVISE_SYMBOLE
+  const symbole = deviseDeBase(await lireDevises()).symbole
 
   return (
     <>

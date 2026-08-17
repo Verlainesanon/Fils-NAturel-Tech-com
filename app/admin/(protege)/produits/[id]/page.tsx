@@ -1,17 +1,16 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
+import { lireDevises, deviseDeBase } from '@/lib/devises'
 import { formaterDateHeure } from '@/lib/format'
 import FormulaireProduit from '@/components/admin/FormulaireProduit'
 
 export const metadata: Metadata = { title: 'Modifier un produit' }
 
 export default async function ModifierProduit({ params }: { params: { id: string } }) {
-  const [produit, categories, reglages] = await Promise.all([
+  const [produit, categories] = await Promise.all([
     prisma.product.findUnique({ where: { id: params.id } }),
     prisma.category.findMany({ orderBy: { ordre: 'asc' } }),
-    lireReglages(),
   ])
   if (!produit) notFound()
 
@@ -30,7 +29,7 @@ export default async function ModifierProduit({ params }: { params: { id: string
         </div>
       </header>
 
-      <FormulaireProduit produit={produit} categories={categories} symbole={reglages.DEVISE_SYMBOLE} />
+      <FormulaireProduit produit={produit} categories={categories} symbole={deviseDeBase(await lireDevises()).symbole} />
 
       <h2 className="admin-groupe" style={{ paddingLeft: 0, marginTop: '2rem' }}>
         Mouvements de stock

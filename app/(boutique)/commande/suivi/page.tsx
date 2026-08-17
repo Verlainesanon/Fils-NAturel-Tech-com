@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/db'
-import { lireReglages } from '@/lib/settings'
-import { formaterPrix, formaterDateHeure } from '@/lib/format'
+import { contexteAffichage } from '@/lib/affichage'
+import { formaterDateHeure } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Suivre ma commande' }
 
@@ -19,7 +19,7 @@ export default async function Suivi({
 }) {
   const numero = (searchParams.numero ?? '').trim()
   const email = (searchParams.email ?? '').trim().toLowerCase()
-  const reglages = await lireReglages()
+  const { prix } = await contexteAffichage()
 
   const commande =
     numero && email
@@ -91,13 +91,13 @@ export default async function Suivi({
                 <span>
                   {l.nomProduit} <span className="mono">×{l.quantite}</span>
                 </span>
-                <span>{formaterPrix(l.prixCentimes * l.quantite, reglages.DEVISE_SYMBOLE)}</span>
+                <span>{prix(l.prixCentimes * l.quantite)}</span>
               </div>
             ))}
 
             <div className="ligne-resume total">
               <span>Total</span>
-              <span>{formaterPrix(commande.totalCentimes, reglages.DEVISE_SYMBOLE)}</span>
+              <span>{prix(commande.totalCentimes)}</span>
             </div>
 
             <div className="journal-evenements">

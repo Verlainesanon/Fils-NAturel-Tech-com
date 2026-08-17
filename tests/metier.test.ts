@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { prixEffectif, formaterPrix, slugifier } from '@/lib/format'
 import { peut } from '@/lib/roles'
 import { verifierMotDePasse, hacherMotDePasse } from '@/lib/auth'
+import { convertir, formaterMontant } from '@/lib/devises'
+import { traduire } from '@/lib/i18n'
 
 const base = { prixCentimes: 10000, promoCentimes: null, promoDebut: null, promoFin: null }
 
@@ -72,5 +74,38 @@ describe('mots de passe', () => {
 
   it('produit une empreinte différente à chaque fois', () => {
     expect(hacherMotDePasse('identique')).not.toBe(hacherMotDePasse('identique'))
+  })
+})
+
+describe('devises', () => {
+  const base = { code: 'HTG', nom: 'Gourde', symbole: 'G', taux: 1, decimales: 2, base: true, actif: true, ordre: 1 }
+  const dollar = { code: 'USD', nom: 'Dollar', symbole: '$', taux: 0.0076, decimales: 2, base: false, actif: true, ordre: 2 }
+
+  it('laisse le montant intact dans la devise de base', () => {
+    expect(convertir(150000, base)).toBe(150000)
+  })
+
+  it('convertit avec le taux de la devise choisie', () => {
+    // 1 500 G à 0,0076 → 11,40 $
+    expect(convertir(150000, dollar)).toBe(1140)
+    expect(formaterMontant(150000, dollar)).toBe('11,40 $')
+  })
+
+  it('respecte le nombre de décimales de la devise', () => {
+    const gourde = { ...base, decimales: 0 }
+    expect(formaterMontant(150000, gourde)).toBe('1 500 G'.replace(' ', '\u202f'))
+  })
+})
+
+describe('traduction', () => {
+  it('traduit une clé connue dans chaque langue', () => {
+    expect(traduire('fr', 'nav.panier')).toBe('Panier')
+    expect(traduire('ht', 'nav.panier')).toBe('Panye')
+    expect(traduire('en', 'nav.panier')).toBe('Cart')
+  })
+
+  it('retombe sur le français quand la traduction manque', () => {
+    expect(traduire('en', 'panier.lunite')).toBe('each')
+    expect(traduire('ht', 'cle.inexistante')).toBe('cle.inexistante')
   })
 })

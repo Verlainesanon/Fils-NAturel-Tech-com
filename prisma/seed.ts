@@ -279,6 +279,14 @@ async function main() {
     })
   }
 
+  for (const devise of [
+    { code: 'HTG', nom: 'Gourde haïtienne', symbole: 'G', taux: 1, base: true, ordre: 1 },
+    { code: 'USD', nom: 'Dollar américain', symbole: '$', taux: 0.0076, base: false, ordre: 2 },
+    { code: 'EUR', nom: 'Euro', symbole: '€', taux: 0.007, base: false, ordre: 3 },
+  ]) {
+    await prisma.devise.upsert({ where: { code: devise.code }, update: {}, create: devise })
+  }
+
   await prisma.promo.upsert({
     where: { code: 'FNTC10' },
     update: {},
@@ -305,7 +313,7 @@ async function main() {
   })
 
   console.log('Seed terminé.')
-  console.log(`  ${CATEGORIES.length} catégories, ${PRODUITS.length} produits, 1 code promo (FNTC10).`)
+  console.log(`  ${CATEGORIES.length} catégories, ${PRODUITS.length} produits, 3 devises, 1 code promo (FNTC10).`)
   console.log(`  Admin : identifiant « proprietaire », mot de passe « ${motDePasse} » — à changer.`)
 }
 
