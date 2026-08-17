@@ -46,6 +46,7 @@ html { scroll-behavior: smooth; }
 html, body { background: var(--bone); }
 
 body {
+  max-width: 100vw;
   color: var(--ink);
   font-family: 'Segoe UI', var(--font-geist-sans), 'Helvetica Neue', -apple-system, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -485,13 +486,73 @@ footer { border-top: 1px solid var(--rule); padding: 2.4rem 0 3rem; margin-top: 
 .pied-reseaux { display: flex; gap: 0.9rem; margin-top: 0.3rem; }
 .pied-bas { display: flex; justify-content: space-between; gap: 1rem; padding-top: 1.2rem; border-top: 1px solid var(--rule-2); flex-wrap: wrap; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; color: var(--ink-3); }
 
+/* Les rayons en pastilles : seul menu visible quand la feuille est masquée. */
+.rayons-tactiles { display: none; }
+
 @media (max-width: 900px) {
   .feat, .detail, .proof, .panier-grille, .paire-champs { grid-template-columns: 1fr; }
   .tiers { grid-template-columns: 1fr; }
-  header nav { display: none; }
   .proof { gap: 1.9rem; }
   .pied-grille { grid-template-columns: 1fr 1fr; }
   .panier-resume { position: static; }
+
+  /* La navigation passe sous la marque, en bande défilante plutôt que cachée. */
+  .hd { flex-wrap: wrap; gap: 0.8rem 1rem; padding-bottom: 0.6rem; }
+  header nav {
+    order: 3;
+    width: 100%;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.15rem;
+  }
+  header nav::-webkit-scrollbar { display: none; }
+  header nav a {
+    flex: none;
+    padding: 0.45rem 0.9rem;
+    border-radius: 99px;
+    background: var(--bone-2);
+    font-size: 0.84rem;
+  }
+  header nav a::after { display: none; }
+  header nav a[aria-current='page'] { background: var(--deep); color: var(--on-deep); }
+  .hd-r { margin-left: auto; }
+}
+
+@media (max-width: 700px) {
+  /* Sous cette largeur, les étiquettes de la feuille deviennent illisibles. */
+  .leafwrap .leaf { display: none; }
+  .leafwrap { margin-top: 2rem; }
+  .rayons-tactiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .rayons-tactiles .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+  }
+  .rayons-tactiles .mono { font-size: 0.62rem; }
+  .leafhint { margin-top: 1.2rem; }
+
+  /* Cibles tactiles : 44 px de haut minimum. */
+  .btn, .pill, .bouton-mini, .lien-panier { min-height: 44px; }
+  .hero { padding-top: 2.5rem; }
+  .hero h1 { max-width: 100%; }
+  .strip { gap: 0.4rem 1.4rem; }
+  .grid { grid-template-columns: 1fr; }
+  .draw { width: 52%; }
+  .p-top, .p-body { padding-inline: 1.1rem; }
+  .panel { padding: 2rem 1.3rem; }
+  .fig { padding: 1.4rem; }
+  .pied-grille { grid-template-columns: 1fr; gap: 1.4rem; }
+  .pied-bas { flex-direction: column; gap: 0.5rem; }
+  .bulle-chat { right: 1rem; bottom: 1rem; }
+  .panneau-chat { right: 0.8rem; left: 0.8rem; width: auto; bottom: 4.8rem; }
 }
 
 @media (max-width: 620px) {

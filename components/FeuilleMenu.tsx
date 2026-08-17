@@ -84,10 +84,21 @@ export default function FeuilleMenu({ rayons, total }: { rayons: Rayon[]; total:
         </g>
       </svg>
 
+      {/* Sur petit écran la feuille devient illisible : les rayons passent en
+          pastilles tactiles, avec la même information. */}
+      <nav className="rayons-tactiles" aria-label="Rayons">
+        {rayons.map((rayon) => (
+          <a key={rayon.slug} href={`/boutique?categorie=${rayon.slug}`} className="pill">
+            {rayon.nom}
+            <span className="mono">{rayon.nombre}</span>
+          </a>
+        ))}
+      </nav>
+
       <p className="leafhint">
         {surplus.length > 0
           ? `Aussi : ${surplus.map((r) => r.nom).join(' · ')}`
-          : 'Chaque pastille est un rayon — cliquez pour l’ouvrir'}
+          : 'Chaque pastille est un rayon — touchez pour l’ouvrir'}
       </p>
     </div>
   )
