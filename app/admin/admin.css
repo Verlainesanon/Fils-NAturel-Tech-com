@@ -169,6 +169,10 @@ table.admin-tableau { width: 100%; border-collapse: collapse; font-size: 0.88rem
 .admin-tableau .colonne-actions { text-align: right; white-space: nowrap; }
 .admin-tableau a:hover { color: var(--sig); }
 
+/* Le détail des articles dans la liste des commandes, une ligne par article. */
+.articles-commande { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.82rem; min-width: 13rem; }
+.articles-commande b { font-family: var(--mono); color: var(--ink-3); font-weight: 600; }
+
 .vignette-tableau { width: 2.6rem; height: 2.6rem; object-fit: cover; border-radius: 9px; background: var(--bone-3); }
 
 .bouton-mini {
@@ -222,6 +226,13 @@ table.admin-tableau { width: 100%; border-collapse: collapse; font-size: 0.88rem
 }
 
 .admin-formulaire .large { grid-column: 1 / -1; }
+
+/* Les gestes d'une commande : annuler, expédier, marquer reçue. */
+.actions-commande { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.actions-commande .btn { width: 100%; }
+@media (max-width: 700px) {
+  .actions-commande { flex-direction: column; align-items: stretch; }
+}
 
 .admin-formulaire h2 {
   grid-column: 1 / -1;

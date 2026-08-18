@@ -418,6 +418,7 @@ export async function changerStatutCommande(formData: FormData) {
   })
   await journaliser(admin.nom, 'modification', `Order#${id}`, `statut → ${statut}`)
   revalidatePath('/admin/commandes')
+  revalidatePath(`/admin/commandes/${id}`)
 }
 
 export async function changerPaiementCommande(formData: FormData) {
@@ -432,6 +433,7 @@ export async function changerPaiementCommande(formData: FormData) {
   })
   await journaliser(admin.nom, 'modification', `Order#${id}`, `paiement → ${statutPaiement}`)
   revalidatePath('/admin/commandes')
+  revalidatePath(`/admin/commandes/${id}`)
 }
 
 export async function noterCommande(formData: FormData) {
@@ -443,6 +445,7 @@ export async function noterCommande(formData: FormData) {
   })
   await journaliser(admin.nom, 'modification', `Order#${id}`, 'note interne / suivi')
   revalidatePath('/admin/commandes')
+  revalidatePath(`/admin/commandes/${id}`)
 }
 
 // ------------------------------------------------------------------ clients

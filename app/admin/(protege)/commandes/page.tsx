@@ -79,12 +79,13 @@ export default async function Commandes({
               <th>Paiement</th>
               <th>Traitement</th>
               <th>Total</th>
+              <th className="colonne-actions">Fiche</th>
             </tr>
           </thead>
           <tbody>
             {commandes.length === 0 && (
               <tr>
-                <td colSpan={7} className="lede">
+                <td colSpan={8} className="lede">
                   Aucune commande ne correspond à ces filtres.
                 </td>
               </tr>
@@ -102,7 +103,14 @@ export default async function Commandes({
                   <span className="mono">{c.emailContact}</span>
                 </td>
                 <td className="mono">{formaterDateHeure(c.creeLe)}</td>
-                <td>{c.lignes.reduce((t, l) => t + l.quantite, 0)}</td>
+                {/* Ce qui a été commandé se lit ici, sans ouvrir la fiche. */}
+                <td className="articles-commande">
+                  {c.lignes.map((l) => (
+                    <span key={l.id}>
+                      <b>{l.quantite} ×</b> {l.nomProduit}
+                    </span>
+                  ))}
+                </td>
                 <td>
                   <span className={`etat etat-${c.statutPaiement}`}>{c.statutPaiement}</span>
                 </td>
@@ -111,6 +119,11 @@ export default async function Commandes({
                 </td>
                 <td>
                   <strong>{formaterPrix(c.totalCentimes, symbole)}</strong>
+                </td>
+                <td className="colonne-actions">
+                  <Link className="bouton-mini" href={`/admin/commandes/${c.id}`}>
+                    Ouvrir
+                  </Link>
                 </td>
               </tr>
             ))}

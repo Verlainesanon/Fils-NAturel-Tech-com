@@ -111,8 +111,76 @@ export default async function DetailCommande({ params }: { params: { id: string 
         </div>
 
         <div>
+          {/* Les gestes courants sont des boutons : le sélecteur ne sert qu'aux
+              cas particuliers, on ne devrait pas avoir à le chercher. */}
+          <div className="admin-formulaire">
+            <h2>Où en est cette commande</h2>
+            <p className="large lede" style={{ margin: 0 }}>
+              État actuel : <span className={`etat etat-${commande.statutTraitement}`}>{commande.statutTraitement}</span>{' '}
+              · paiement : <span className={`etat etat-${commande.statutPaiement}`}>{commande.statutPaiement}</span>
+            </p>
+            <div className="large actions-commande">
+              {commande.statutTraitement !== 'preparee' && commande.statutTraitement !== 'annulee' && (
+                <FormulaireAdmin action={changerStatutCommande}>
+                  <input type="hidden" name="id" value={commande.id} />
+                  <input type="hidden" name="statutTraitement" value="preparee" />
+                  <button className="btn btn-line" type="submit">
+                    Marquer préparée
+                  </button>
+                </FormulaireAdmin>
+              )}
+              {commande.statutTraitement !== 'expediee' && commande.statutTraitement !== 'annulee' && (
+                <FormulaireAdmin action={changerStatutCommande}>
+                  <input type="hidden" name="id" value={commande.id} />
+                  <input type="hidden" name="statutTraitement" value="expediee" />
+                  <button className="btn btn-line" type="submit">
+                    Marquer expédiée
+                  </button>
+                </FormulaireAdmin>
+              )}
+              {commande.statutTraitement !== 'livree' && commande.statutTraitement !== 'annulee' && (
+                <FormulaireAdmin action={changerStatutCommande}>
+                  <input type="hidden" name="id" value={commande.id} />
+                  <input type="hidden" name="statutTraitement" value="livree" />
+                  <button className="btn btn-solid" type="submit">
+                    Le client a reçu la commande
+                  </button>
+                </FormulaireAdmin>
+              )}
+              {commande.statutTraitement !== 'annulee' && (
+                <FormulaireAdmin
+                  action={changerStatutCommande}
+                  confirmation={`Annuler la commande ${commande.numero} ? Les articles retournent en stock.`}
+                >
+                  <input type="hidden" name="id" value={commande.id} />
+                  <input type="hidden" name="statutTraitement" value="annulee" />
+                  <button className="btn btn-sig" type="submit">
+                    Annuler la commande
+                  </button>
+                </FormulaireAdmin>
+              )}
+              {commande.statutTraitement === 'annulee' && (
+                <p className="lede" style={{ margin: 0 }}>
+                  Commande annulée : le stock a été remis. Pour la rouvrir, choisissez un autre état ci-dessous.
+                </p>
+              )}
+            </div>
+            {commande.statutPaiement !== 'payee' && commande.statutTraitement !== 'annulee' && (
+              <div className="large actions-commande">
+                <FormulaireAdmin action={changerPaiementCommande}>
+                  <input type="hidden" name="id" value={commande.id} />
+                  <input type="hidden" name="statutPaiement" value="payee" />
+                  <input type="hidden" name="modePaiement" value={commande.modePaiement} />
+                  <button className="btn btn-line" type="submit">
+                    Marquer payée
+                  </button>
+                </FormulaireAdmin>
+              </div>
+            )}
+          </div>
+
           <FormulaireAdmin action={changerStatutCommande} className="admin-formulaire">
-            <h2>Traitement</h2>
+            <h2>Changer l’état à la main</h2>
             <input type="hidden" name="id" value={commande.id} />
             <div className="champ large">
               <label htmlFor="statutTraitement">État</label>
