@@ -1,0 +1,449 @@
+% Guide d'utilisation de l'administration — Fils Naturel Tech-Com
+% Compilation : pdflatex guide-admin-fntc.tex (deux passes pour la table des matières)
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{lmodern} % polices vectorielles : le PDF reste net à l'écran et à l'impression
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[a4paper,margin=2.4cm,headheight=15pt]{geometry}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+% Couleurs reprises du site : os, rouge signature, ambre.
+\definecolor{sig}{HTML}{D8161F}
+\definecolor{amb}{HTML}{E8B33A}
+\definecolor{encre}{HTML}{1A0D0C}
+\definecolor{encre2}{HTML}{6B5D57}
+\definecolor{os}{HTML}{F4F2EC}
+\definecolor{os2}{HTML}{EAE7DE}
+
+\hypersetup{
+  pdftitle={Guide de l'administration — Fils Naturel Tech-Com},
+  pdfauthor={Fils Naturel Tech-Com},
+  pdfsubject={Mode d'emploi de la partie administration},
+  colorlinks=false,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{encre2}Fils Naturel Tech-Com}
+\fancyhead[R]{\small\color{encre2}Guide de l'administration}
+\fancyfoot[C]{\small\color{encre2}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{os2}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}{\Large\bfseries\color{encre}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{encre}}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.6em}{0.7em}
+
+\setlist[itemize]{leftmargin=1.2em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=1.4em,itemsep=0.3em,topsep=0.35em}
+
+% Encadrés : conseil, attention, à retenir.
+\newtcolorbox{conseil}[1][]{colback=os,colframe=amb,boxrule=0pt,leftrule=3pt,
+  arc=2pt,left=8pt,right=8pt,top=6pt,bottom=6pt,#1}
+\newtcolorbox{attention}[1][]{colback=os,colframe=sig,boxrule=0pt,leftrule=3pt,
+  arc=2pt,left=8pt,right=8pt,top=6pt,bottom=6pt,#1}
+
+\newcommand{\bouton}[1]{\textbf{\textcolor{sig}{#1}}}
+\newcommand{\menu}[1]{\textsf{\textbf{#1}}}
+\newcommand{\champ}[1]{\textit{#1}}
+
+\begin{document}
+
+% ------------------------------------------------------------------ couverture
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\color{sig}\rule{4cm}{2pt}}\par
+\vspace{1.2cm}
+{\Huge\bfseries Guide de l'administration\par}
+\vspace{0.8cm}
+{\LARGE Fils Naturel Tech-Com\par}
+\vspace{2.5cm}
+{\large Comment gérer la boutique au quotidien :\\
+articles, photos, prix d'achat et de vente, stock,\\
+commandes, achats et bilan des bénéfices.\par}
+\vfill
+{\color{encre2}\large Version 1 — \today\par}
+\vspace{0.5cm}
+{\color{sig}\rule{4cm}{2pt}}\par
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ------------------------------------------------------------------ démarrage
+\section{Avant de commencer}
+
+\subsection{Se connecter}
+
+L'administration se trouve à l'adresse du site suivie de \texttt{/admin}. Par
+exemple :
+
+\begin{center}\ttfamily https://votre-site.onrender.com/admin\end{center}
+
+\begin{enumerate}
+  \item Saisir l'identifiant et le mot de passe reçus.
+  \item Le bouton en forme d'\oe il, à droite du champ, affiche le mot de passe
+        pour vérifier la saisie.
+  \item Cliquer sur \bouton{Se connecter}.
+\end{enumerate}
+
+\begin{attention}
+Après cinq mots de passe faux, le compte est bloqué pendant quinze minutes.
+Ce n'est pas une panne : c'est la protection contre quelqu'un qui essaierait
+de deviner le mot de passe.
+\end{attention}
+
+\begin{conseil}
+Changez le mot de passe fourni au départ dès la première connexion, dans
+\menu{Administration $\rightarrow$ Comptes admin}. Un mot de passe long
+(une phrase entière) vaut mieux qu'un mot compliqué et court.
+\end{conseil}
+
+\subsection{Les quatre niveaux de compte}
+
+Chaque personne à qui vous donnez un accès reçoit un rôle. Le rôle décide de
+ce qu'elle peut faire ; le site le vérifie à chaque action, pas seulement dans
+le menu.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Rôle} & \textbf{Ce qu'il permet} \\
+\midrule
+Lecteur & Regarder, sans rien modifier. Pour montrer les chiffres à quelqu'un. \\
+Vendeur & Commandes, stock, achats, clients, messages. Le rôle du comptoir. \\
+Gestionnaire & Tout ce qui précède, plus les articles, les prix, les promotions et les textes du site. \\
+Propriétaire & Tout, y compris les comptes, les devises, les paramètres et le journal. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{conseil}
+Donnez le rôle \textit{Vendeur} à un employé du comptoir. Gardez
+\textit{Propriétaire} pour vous. Le dernier propriétaire ne peut être ni
+supprimé ni rétrogradé : le site refuse de vous enfermer dehors.
+\end{conseil}
+
+\subsection{Se repérer dans le menu}
+
+Le menu de gauche est rangé par métier :
+
+\begin{itemize}
+  \item \menu{Pilotage} — le tableau de bord et le bilan des bénéfices.
+  \item \menu{Catalogue} — les articles, les rayons, le stock, les achats, les promotions.
+  \item \menu{Ventes} — les commandes, les clients, les messages.
+  \item \menu{Contenus} — les textes du site, la médiathèque, les bannières.
+  \item \menu{Administration} — les paramètres, les devises, les comptes, le journal.
+\end{itemize}
+
+Sur téléphone, le menu se replie ; tout reste accessible.
+
+% ------------------------------------------------------------------ articles
+\section{Gérer les articles}
+
+\subsection{Créer un article}
+
+\menu{Catalogue $\rightarrow$ Produits}, puis \bouton{Nouveau produit}.
+
+\begin{enumerate}
+  \item \champ{Nom} — celui que verront les clients.
+  \item \champ{Rayon} — obligatoire ; créez-le d'abord dans \menu{Catégories} s'il manque.
+  \item \champ{Référence} — votre code interne, facultatif mais pratique pour la recherche.
+  \item \champ{Description courte} — la phrase qui s'affiche sous le nom dans le catalogue.
+  \item \champ{Description complète} — le texte de la fiche.
+  \item \champ{Caractéristiques} — les lignes du tableau technique (poids, garantie, puissance\ldots).
+  \item Les prix et le stock : voir ci-dessous.
+  \item \champ{Statut} — \textit{Publié} pour le mettre en ligne, \textit{Brouillon} pour le préparer sans le montrer.
+  \item \bouton{Enregistrer}.
+\end{enumerate}
+
+\subsection{Prix d'achat et prix de vente}
+
+Deux champs distincts, à ne pas confondre :
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\champ{Prix d'achat, l'unité} & Ce que l'article vous coûte. Sert à calculer votre bénéfice. Le client ne le voit jamais. \\
+\champ{Prix de vente} & Ce que le client paie. C'est le prix affiché sur le site. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Le prix d'achat se remplit tout seul dès que vous enregistrez un achat
+(chapitre~\ref{sec:achats}) : inutile de le tenir à jour à la main.
+
+\begin{attention}
+Si le prix d'achat reste à zéro, le bilan comptera l'article comme du bénéfice
+entier — vos chiffres seront faux, trop beaux. La page \menu{Bilan} vous
+prévient quand des articles en stock sont dans ce cas.
+\end{attention}
+
+\subsection{Ajouter des photos}
+
+Dans le formulaire de l'article, zone \champ{Photos} : cliquez, choisissez une
+ou plusieurs images, jusqu'à huit. Elles sont réduites et compressées
+automatiquement avant l'envoi ; une photo prise au téléphone passe sans
+problème. La première image est celle qui apparaît dans le catalogue ;
+faites-la glisser pour changer l'ordre.
+
+\subsection{Mettre un article en promotion}
+
+Sur la fiche de l'article : \champ{Prix promo}, puis \champ{Promo à partir du}
+et \champ{Promo jusqu'au}. Hors de ces dates, le prix normal revient tout seul.
+Le prix barré s'affiche à côté du prix promotionnel.
+
+Pour une réduction sur toute la commande, utilisez plutôt un code promo :
+\menu{Catalogue $\rightarrow$ Promotions}.
+
+% ------------------------------------------------------------------ stock
+\section{Le stock}
+
+\menu{Catalogue $\rightarrow$ Stock et ruptures} liste les articles du plus bas
+au plus haut, les ruptures en tête. Deux façons de corriger une ligne :
+
+\begin{itemize}
+  \item \champ{Nouvelle quantité} — vous tapez le stock réel compté sur l'étagère. Utilisez-la après un inventaire.
+  \item \champ{Ajouter / retirer} — vous tapez l'écart : \texttt{-2} pour deux articles cassés, \texttt{+5} pour cinq retrouvés.
+\end{itemize}
+
+Chaque correction laisse une trace datée et signée dans l'historique, en bas de
+la page. Rien ne se modifie en silence.
+
+\begin{conseil}
+Pour une entrée de marchandise, ne passez pas par cette page : enregistrez un
+\textbf{achat}. Le stock monte pareil, mais le prix payé est gardé et votre
+bénéfice reste juste.
+\end{conseil}
+
+% ------------------------------------------------------------------ achats
+\section{Les achats}
+\label{sec:achats}
+
+\menu{Catalogue $\rightarrow$ Achats}. C'est ici qu'on note ce qu'on a acheté
+pour revendre.
+
+\subsection{Enregistrer un achat}
+
+\begin{enumerate}
+  \item \champ{Article} — celui qui entre en stock.
+  \item \champ{Acheté} — \textit{À l'unité} ou \textit{Par lot / carton}.
+  \item \champ{Nombre} — le nombre d'unités, ou le nombre de lots.
+  \item \champ{Unités par lot} — apparaît en mode lot : combien de pièces contient un carton.
+  \item \champ{Le prix saisi est} — \textit{Le total payé}, ou \textit{Le prix d'un lot} / \textit{d'une unité}.
+  \item \champ{Prix payé} — le montant.
+  \item \champ{Date}, \champ{Fournisseur}, \champ{Note} — la date compte pour le bilan ; le reste est facultatif.
+  \item Vérifiez l'encadré de contrôle, puis \bouton{Enregistrer l'achat}.
+\end{enumerate}
+
+L'encadré calcule sous vos yeux, avant validation : combien d'unités entrent,
+ce que revient chaque unité, le total payé et le stock après l'opération.
+
+\begin{conseil}
+\textbf{Exemple.} Dix cartons de douze câbles, à 6\,000 le carton. Choisissez
+\textit{Par lot}, nombre \texttt{10}, unités par lot \texttt{12}, prix saisi
+\textit{Le prix d'un lot}, prix \texttt{6000}. Le site comprend : 120 câbles
+entrent, chacun revient à 500, vous avez payé 60\,000.
+\end{conseil}
+
+\subsection{Ce que l'achat déclenche}
+
+\begin{itemize}
+  \item Le stock de l'article monte du nombre d'unités.
+  \item Le prix d'achat de l'article est recalculé en \textbf{moyenne pondérée}.
+        Si vous aviez 10 pièces à 400 et que 10 entrent à 600, le coût passe à 500.
+  \item La dépense est datée et comptée dans le bilan de la période.
+  \item Un mouvement de stock est tracé, avec votre nom.
+\end{itemize}
+
+\subsection{Corriger une erreur}
+
+Le bouton \bouton{Supprimer} sur la ligne d'un achat annule l'opération : les
+unités concernées repartent du stock. Une confirmation est demandée.
+
+\begin{attention}
+La suppression retire les unités du stock mais ne rétablit pas l'ancien prix
+d'achat moyen. Après une grosse erreur, vérifiez le champ \champ{Prix d'achat}
+sur la fiche de l'article et corrigez-le à la main si besoin.
+\end{attention}
+
+% ------------------------------------------------------------------ commandes
+\section{Les commandes}
+
+\subsection{Voir ce qui a été commandé}
+
+\menu{Ventes $\rightarrow$ Commandes}. Le tableau donne, pour chaque commande,
+le numéro, le client, la date, \textbf{le détail des articles} (par exemple
+\texttt{2 $\times$ Routeur Wi-Fi 6}), l'état du paiement, l'état du traitement
+et le total. Le bouton \bouton{Ouvrir} affiche la fiche complète : prix
+unitaires, quantités, sous-total, remise, livraison, adresse et historique.
+
+Les champs de recherche du haut filtrent par numéro, nom, email, état ou
+paiement.
+
+\subsection{Faire avancer une commande}
+
+Sur la fiche, l'encadré \menu{Où en est cette commande} donne les boutons :
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\bouton{Marquer préparée} & Les articles sont rassemblés, prêts à partir. \\
+\bouton{Marquer expédiée} & La commande est partie. Notez le numéro de suivi juste en dessous. \\
+\bouton{Le client a reçu la commande} & La commande est livrée. \\
+\bouton{Marquer payée} & L'argent est encaissé. \\
+\bouton{Annuler la commande} & Voir ci-dessous. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Un bouton disparaît quand il n'a plus de sens : une commande déjà livrée ne
+propose plus « Le client a reçu la commande ».
+
+\begin{attention}
+\textbf{Une vente n'entre dans le bilan que lorsqu'elle est à la fois payée et
+livrée.} Tant que ces deux boutons n'ont pas été cliqués, la vente n'apparaît
+ni dans le chiffre d'affaires ni dans le bénéfice.
+\end{attention}
+
+\subsection{Annuler une commande}
+
+\bouton{Annuler la commande}, en rouge. Une confirmation est demandée, puis
+\textbf{les articles retournent en stock} automatiquement, avec un mouvement
+tracé. Pour rouvrir une commande annulée par erreur, utilisez le sélecteur
+\menu{Changer l'état à la main}, juste en dessous des boutons.
+
+\subsection{Saisir une commande au comptoir}
+
+\menu{Ventes $\rightarrow$ Commandes}, bouton \bouton{Saisir une commande}.
+Utile pour une vente en boutique, par téléphone ou par message.
+
+\begin{enumerate}
+  \item Cherchez les articles, filtrez par rayon si la liste est longue.
+  \item Ajoutez-les et \textbf{tapez la quantité} au clavier — pas besoin de cliquer trente fois.
+  \item Choisissez le client s'il est déjà inscrit : son nom, son email, son téléphone et son adresse se remplissent seuls.
+  \item Ajustez les frais de livraison, le mode et l'état du paiement.
+  \item \bouton{Enregistrer la commande}. Le stock baisse aussitôt.
+\end{enumerate}
+
+% ------------------------------------------------------------------ bilan
+\section{Le bilan et les bénéfices}
+
+\menu{Pilotage $\rightarrow$ Bilan et bénéfices}. Quatre onglets en haut :
+\bouton{Aujourd'hui}, \bouton{Cette semaine}, \bouton{Ce mois},
+\bouton{Cette année}. La semaine commence le lundi.
+
+\subsection{Lire les chiffres}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Ventes} & Ce que les clients ont payé sur la période. \\
+\textbf{Bénéfice} & Les ventes moins ce que la marchandise vous a coûté. C'est ce qui vous reste. \\
+\textbf{Taux de marge} & Le bénéfice en pourcentage des ventes. 30~\% veut dire : sur 100 encaissés, 30 vous restent. \\
+\textbf{Achats de la période} & Ce que vous avez dépensé en marchandise pendant la période. \\
+\textbf{Unités achetées} & Le nombre de pièces entrées en stock. \\
+\textbf{Reste en stock} & Le nombre de pièces disponibles, avec les ruptures et les seuils d'alerte. \\
+\textbf{Stock au prix d'achat} & L'argent qui dort sur vos étagères. \\
+\textbf{Stock au prix de vente} & Ce que ce stock rapportera une fois vendu, et le bénéfice à venir. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Sous chaque chiffre, la comparaison avec la période précédente : hier pour
+aujourd'hui, la semaine dernière pour cette semaine, et ainsi de suite. En
+vert, ça va dans le bon sens ; en rouge, ça recule.
+
+Le tableau du bas classe vos dix meilleurs articles de la période : unités
+vendues, ventes et bénéfice.
+
+\begin{conseil}
+Un bénéfice qui paraît trop beau vient presque toujours d'articles sans prix
+d'achat. Le message d'alerte en haut de la page vous dit combien d'articles
+sont concernés.
+\end{conseil}
+
+% ------------------------------------------------------------------ le reste
+\section{Le reste de l'administration}
+
+\subsection{Clients}
+\menu{Ventes $\rightarrow$ Clients} : la fiche de chaque client, ses commandes,
+son total dépensé et son badge de fidélité. La fiche est modifiable.
+
+\subsection{Messages}
+\menu{Ventes $\rightarrow$ Messages} : les conversations ouvertes depuis la
+bulle de chat du site. La pastille du menu compte les messages non lus.
+Répondez depuis la conversation ; le visiteur voit la réponse sans rechargement.
+
+\subsection{Textes du site, bannières, médiathèque}
+\menu{Contenus} : tous les textes de l'accueil, les bandeaux d'annonce et les
+images réutilisables se modifient sans toucher au code.
+
+\subsection{Devises et taux}
+\menu{Administration $\rightarrow$ Devises et taux} : la devise de base (celle
+dans laquelle vous saisissez les prix) et le taux de chaque autre devise. Le
+visiteur choisit la sienne en haut du site ; les prix sont convertis à
+l'affichage. Mettez les taux à jour quand ils bougent.
+
+\subsection{Paramètres}
+\menu{Administration $\rightarrow$ Paramètres} : nom du site, slogan, contacts,
+frais de livraison, seuil de livraison offerte.
+
+\subsection{Comptes admin}
+\menu{Administration $\rightarrow$ Comptes admin} : créer un accès, changer un
+rôle, réinitialiser un mot de passe.
+
+\subsection{Journal d'audit}
+\menu{Administration $\rightarrow$ Journal d'audit} : qui a fait quoi, et quand.
+Il ne peut pas être effacé depuis l'interface. C'est votre preuve en cas de
+doute sur une modification.
+
+% ------------------------------------------------------------------ habitudes
+\section{Les bonnes habitudes}
+
+\begin{enumerate}
+  \item \textbf{Chaque matin} — ouvrir \menu{Commandes}, traiter les nouvelles, marquer préparées celles qui partent.
+  \item \textbf{À chaque arrivage} — enregistrer un \textbf{achat}, jamais une correction de stock.
+  \item \textbf{À chaque vente livrée et payée} — cliquer les deux boutons, sinon le bilan reste faux.
+  \item \textbf{Chaque semaine} — regarder \menu{Bilan} en vue hebdomadaire et la page \menu{Stock} pour les ruptures.
+  \item \textbf{Chaque mois} — inventaire physique, correction par \textit{Nouvelle quantité}, puis bilan mensuel.
+\end{enumerate}
+
+% ------------------------------------------------------------------ dépannage
+\section{En cas de problème}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Symptôme} & \textbf{Que faire} \\
+\midrule
+Le site met vingt secondes à s'ouvrir & Sur l'offre gratuite, le site s'endort après quinze minutes sans visite. La première visite le réveille. Passer à l'offre payante supprime l'attente. \\
+« Compte bloqué » à la connexion & Cinq mots de passe faux. Attendre quinze minutes, ou faire réinitialiser par un propriétaire. \\
+Une photo refuse de s'enregistrer & Essayer avec moins d'images à la fois, ou une image moins lourde. \\
+Le stock ne correspond pas & Ouvrir \menu{Stock}, lire l'historique en bas : chaque mouvement est daté et signé. \\
+Le bénéfice paraît faux & Des articles n'ont pas de prix d'achat. Voir l'alerte en haut du \menu{Bilan}. \\
+Une commande a disparu de la liste & Un filtre est actif. Vider la recherche et remettre « Tous les états ». \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\vspace{1.5cm}
+\begin{center}
+{\color{sig}\rule{3cm}{1.5pt}}\par
+\vspace{0.4cm}
+{\color{encre2}\small Fils Naturel Tech-Com — guide de l'administration}
+\end{center}
+
+\end{document}
