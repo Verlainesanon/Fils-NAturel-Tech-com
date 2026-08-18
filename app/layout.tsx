@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
 import { lireReglages } from '@/lib/settings'
@@ -13,6 +13,13 @@ const geistMono = localFont({
   variable: '--font-geist-mono',
   weight: '100 900',
 })
+
+/* viewport-fit=cover : les encoches d'iPhone n'avalent plus la barre d'achat. */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const reglages = await lireReglages()

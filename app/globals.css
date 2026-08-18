@@ -330,6 +330,11 @@ header nav a[aria-current='page']::after, header nav a:hover::after { transform:
 .pill { padding: 0.7rem 1.1rem; border-radius: 99px; font-size: 0.8rem; color: var(--ink-2); background: var(--bone-2); transition: background 0.3s, color 0.3s; }
 .pill:hover { color: var(--ink); }
 .pill[aria-pressed='true'] { background: var(--deep); color: var(--on-deep); }
+/* Les filtres de rayon et de tri : mêmes pastilles que .pill, en lien. */
+.puce-filtre { padding: 0.7rem 1.1rem; border-radius: 99px; font-size: 0.8rem; color: var(--ink-2); background: var(--bone-2); transition: background 0.3s, color 0.3s; white-space: nowrap; }
+.puce-filtre:hover { color: var(--ink); }
+.puce-filtre.actif { background: var(--deep); color: var(--on-deep); }
+
 .groupe-filtre { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 .pagination { display: flex; gap: 0.4rem; justify-content: center; margin-top: 2.5rem; }
 
@@ -478,7 +483,7 @@ select option { background: var(--bone); color: var(--ink); }
 .champ-quantite[data-en-cours] { opacity: 0.55; }
 
 @media (max-width: 700px) {
-  .champ-quantite input { width: 100%; min-width: 6rem; padding-block: 0.9rem; }
+  .champ-quantite input { width: 7rem; padding-block: 0.9rem; }
 }
 .bloc-achat { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; width: 100%; padding-block: 1.4rem 0.6rem; }
 .bloc-achat .mono, .bloc-achat .message-erreur, .bloc-achat .message-succes { flex: 1 0 100%; }
@@ -618,19 +623,81 @@ footer { border-top: 1px solid var(--rule); padding: 2.4rem 0 3rem; margin-top: 
   .hero { padding-top: 2.5rem; }
   .hero h1 { max-width: 100%; }
   .strip { gap: 0.4rem 1.4rem; }
-  .grid { grid-template-columns: 1fr; }
-  .draw { width: 52%; }
-  .p-top, .p-body { padding-inline: 1.1rem; }
+
+  /* Deux articles par ligne : une seule colonne obligeait à défiler sans fin. */
+  .grid { grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .draw { width: 62%; margin-block: 0.1rem 0.3rem; }
+  .p-top, .p-body { padding-inline: 0.85rem; }
+  .p-top { padding-top: 0.9rem; }
+  .p-body { padding-bottom: 0.9rem; }
+  .p-name { font-size: 1rem; }
+  .p-desc { -webkit-line-clamp: 3; font-size: 0.84rem; }
+  .price b { font-size: 1.15rem; }
+  .p-foot { flex-direction: column; align-items: flex-start; gap: 0.3rem; padding-top: 0.8rem; }
+  .go { display: none; }
+
+  /* Les rayons défilent à l'horizontale : empilés, ils mangeaient l'écran. */
+  .filters { display: block; overflow: visible; margin-bottom: 1.5rem; }
+  .groupe-filtre {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 0.35rem;
+  }
+  .groupe-filtre::-webkit-scrollbar { display: none; }
+  .groupe-filtre > * { flex: none; }
+  .puce-filtre { min-height: 44px; display: inline-flex; align-items: center; }
+  .barre-recherche { flex-wrap: wrap; }
+  .barre-recherche input, .filters input[type='search'] { min-width: 0; flex: 1 1 100%; }
+  .barre-recherche .btn { width: 100%; }
+
+  /* Safari iOS zoome sur tout champ sous 16 px : on le rend impossible. */
+  input, textarea, select, .filters input[type='search'], .barre-recherche input { font-size: 16px; }
   .panel { padding: 2rem 1.3rem; }
   .fig { padding: 1.4rem; }
+
+  /* Le bloc d'achat reste sous le pouce pendant la lecture de la fiche. */
+  .bloc-achat {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    gap: 0.7rem;
+    background: color-mix(in srgb, var(--bone) 93%, transparent);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--rule);
+    margin-inline: calc(-1 * clamp(1.25rem, 4vw, 2.5rem));
+    padding: 0.8rem clamp(1.25rem, 4vw, 2.5rem);
+    padding-bottom: calc(0.8rem + env(safe-area-inset-bottom));
+  }
+  .bloc-achat .btn { flex: 1 1 auto; }
+  .bloc-achat .champ-quantite-nom { display: none; }
+  .bloc-achat .champ-quantite input { width: 5.5rem; }
+
   .pied-grille { grid-template-columns: 1fr; gap: 1.4rem; }
   .pied-bas { flex-direction: column; gap: 0.5rem; }
-  .bulle-chat { right: 1rem; bottom: 1rem; }
-  .panneau-chat { right: 0.8rem; left: 0.8rem; width: auto; bottom: 4.8rem; }
+  .bulle-chat { right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); }
+  .panneau-chat { right: 0.8rem; left: 0.8rem; width: auto; bottom: calc(4.8rem + env(safe-area-inset-bottom)); max-height: 70svh; }
 }
 
 @media (max-width: 620px) {
-  .panier-ligne { grid-template-columns: 3.6rem 1fr; }
-  .panier-total-ligne { grid-column: 2; align-items: flex-start; }
+  /* Une ligne de panier tient en deux colonnes : vignette, puis le reste. */
+  .panier-ligne { grid-template-columns: 3.6rem 1fr; gap: 0.55rem 0.85rem; padding: 0.95rem 1rem; }
+  .panier-visuel { width: 3.6rem; height: 3.6rem; }
+  .panier-ligne .champ-quantite { grid-column: 2; }
+  .panier-ligne .champ-quantite input { width: 6rem; }
+  .panier-total-ligne {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .panier-details strong { font-size: 1.02rem; }
   .ligne-commande { grid-template-columns: 1fr 1fr; }
+}
+
+/* Sur téléphone, très petits écrans : une carte produit par ligne. */
+@media (max-width: 340px) {
+  .grid { grid-template-columns: 1fr; }
+  .draw { width: 48%; }
 }
