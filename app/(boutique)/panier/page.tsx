@@ -2,7 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { detaillerPanier } from '@/lib/cart'
 import { contexteAffichage } from '@/lib/affichage'
-import { changerQuantite, retirerDuPanier, appliquerCodePromo } from '@/app/actions/panier'
+import { retirerDuPanier, appliquerCodePromo } from '@/app/actions/panier'
+import QuantitePanier from '@/components/QuantitePanier'
 
 export const metadata: Metadata = { title: 'Panier' }
 
@@ -61,17 +62,12 @@ export default async function Panier({ searchParams }: { searchParams: { promo?:
                   </span>
                 </div>
 
-                <div className="panier-actions">
-                  <form action={changerQuantite.bind(null, ligne.produitId, ligne.quantite - 1)}>
-                    <button type="submit" aria-label="Retirer un exemplaire">−</button>
-                  </form>
-                  <span className="mono">{ligne.quantite}</span>
-                  <form action={changerQuantite.bind(null, ligne.produitId, ligne.quantite + 1)}>
-                    <button type="submit" disabled={ligne.quantite >= ligne.stock} aria-label="Ajouter un exemplaire">
-                      +
-                    </button>
-                  </form>
-                </div>
+                <QuantitePanier
+                  produitId={ligne.produitId}
+                  quantite={ligne.quantite}
+                  stock={ligne.stock}
+                  libelle={`${t('panier.quantite')} — ${ligne.nom}`}
+                />
 
                 <div className="panier-total-ligne">
                   <strong>{prix(ligne.totalCentimes)}</strong>

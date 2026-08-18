@@ -92,7 +92,17 @@ export default async function FicheProduit({ params }: { params: { slug: string 
                 {t('produit.livraison')} {reglages.LIVRAISON_DELAI}
               </p>
 
-              <AjoutPanier produitId={produit.id} stock={produit.stock} />
+              <AjoutPanier
+                produitId={produit.id}
+                stock={produit.stock}
+                libelles={{
+                  ajouter: t('produit.ajouter'),
+                  ajout: t('produit.ajout'),
+                  ajoute: t('produit.ajoute'),
+                  epuise: t('produit.epuise'),
+                  quantite: t('panier.quantite'),
+                }}
+              />
 
               {caracteristiques.length > 0 && (
                 <table className="spec">

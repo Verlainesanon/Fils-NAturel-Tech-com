@@ -76,6 +76,7 @@ const FR: Dictionnaire = {
   'panier.continuer': 'Continuer mes achats',
   'panier.retirer': 'Retirer',
   'panier.lunite': 'l’unité',
+  'panier.quantite': 'Quantité',
   'devise.choisir': 'Devise',
   'langue.choisir': 'Langue',
 }
@@ -137,6 +138,7 @@ const HT: Dictionnaire = {
   'panier.continuer': 'Kontinye achte',
   'panier.retirer': 'Retire',
   'panier.lunite': 'chak',
+  'panier.quantite': 'Kantite',
   'devise.choisir': 'Lajan',
   'langue.choisir': 'Lang',
 }
@@ -198,6 +200,7 @@ const EN: Dictionnaire = {
   'panier.continuer': 'Keep shopping',
   'panier.retirer': 'Remove',
   'panier.lunite': 'each',
+  'panier.quantite': 'Quantity',
   'devise.choisir': 'Currency',
   'langue.choisir': 'Language',
 }
