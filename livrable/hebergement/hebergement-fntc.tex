@@ -1,0 +1,664 @@
+% Guide de mise en ligne — Fils Naturel Tech-Com
+% Compilation : pdflatex hebergement-fntc.tex (deux passes pour la table des matières)
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[a4paper,margin=2.4cm,headheight=15pt]{geometry}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{sig}{HTML}{D8161F}
+\definecolor{amb}{HTML}{E8B33A}
+\definecolor{encre}{HTML}{1A0D0C}
+\definecolor{encre2}{HTML}{6B5D57}
+\definecolor{os}{HTML}{F4F2EC}
+\definecolor{os2}{HTML}{EAE7DE}
+\definecolor{vert}{HTML}{3F8C5E}
+
+\hypersetup{
+  pdftitle={Guide de mise en ligne — Fils Naturel Tech-Com},
+  pdfauthor={Fils Naturel Tech-Com},
+  pdfsubject={Acheter un domaine, payer l'hébergement, mettre le site en ligne},
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{encre2}Fils Naturel Tech-Com}
+\fancyhead[R]{\small\color{encre2}Guide de mise en ligne}
+\fancyfoot[C]{\small\color{encre2}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{os2}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}{\Large\bfseries\color{encre}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{encre}}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.6em}{0.7em}
+
+\setlist[itemize]{leftmargin=1.2em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=1.5em,itemsep=0.4em,topsep=0.4em}
+
+\newtcolorbox{conseil}[1][]{colback=os,colframe=amb,boxrule=0pt,leftrule=3pt,
+  arc=2pt,left=8pt,right=8pt,top=6pt,bottom=6pt,#1}
+\newtcolorbox{attention}[1][]{colback=os,colframe=sig,boxrule=0pt,leftrule=3pt,
+  arc=2pt,left=8pt,right=8pt,top=6pt,bottom=6pt,#1}
+\newtcolorbox{etape}[1][]{colback=os2,colframe=encre,boxrule=0pt,leftrule=3pt,
+  arc=2pt,left=8pt,right=8pt,top=6pt,bottom=6pt,#1}
+
+\newcommand{\bouton}[1]{\textbf{\textcolor{sig}{[\,#1\,]}}}
+\newcommand{\champ}[1]{\textit{#1}}
+\newcommand{\saisir}[1]{\texttt{#1}}
+\newcommand{\lien}[2]{\href{#1}{\texttt{#2}}}
+
+% Ligne à remplir à la main.
+\newcommand{\aremplir}{\dotfill\rule{0pt}{1.1em}}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{2.5cm}
+{\color{sig}\rule{4cm}{2pt}}\par
+\vspace{1.2cm}
+{\Huge\bfseries Mettre le site en ligne\par}
+\vspace{0.9cm}
+{\LARGE Fils Naturel Tech-Com\par}
+\vspace{2.2cm}
+{\large De l'achat du nom de domaine\\
+jusqu'au site ouvert au public.\par}
+\vspace{1cm}
+{\color{encre2}\large Écrit pour quelqu'un qui n'a jamais fait ça.\\
+Aucune connaissance en informatique n'est nécessaire.\par}
+\vfill
+{\color{encre2}\large Version 1 — \today\par}
+\vspace{0.5cm}
+{\color{sig}\rule{4cm}{2pt}}\par
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ==================================================================
+\section{À lire avant tout}
+
+\subsection{Ce que vous allez faire}
+
+Le site est écrit, testé, et son code est rangé sur Internet. Il lui manque
+trois choses, que ce guide vous fait acheter et brancher :
+
+\begin{enumerate}
+  \item \textbf{Un nom de domaine} — l'adresse que les clients taperont, par
+        exemple \saisir{filsnaturel.com}. On l'achète une fois, on le
+        renouvelle chaque année.
+  \item \textbf{Un hébergement} — l'ordinateur qui fait tourner le site jour et
+        nuit. On le paie chaque mois.
+  \item \textbf{Une base de données} — l'endroit où sont rangés les articles,
+        les commandes et les clients. On la paie chaque mois aussi.
+\end{enumerate}
+
+\begin{conseil}
+\textbf{Une image simple.} Le nom de domaine, c'est l'adresse de la boutique
+écrite sur la rue. L'hébergement, c'est le local. La base de données, c'est le
+stock et les registres à l'intérieur. Sans local, l'adresse ne mène nulle part.
+\end{conseil}
+
+\subsection{Combien de temps, combien d'argent}
+
+Comptez \textbf{une heure} en tout, sans compter l'attente automatique du
+branchement du domaine (de dix minutes à quelques heures, pendant lesquelles
+vous n'avez rien à faire).
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}Xrr@{}}
+\toprule
+\textbf{Ce que vous payez} & \textbf{Par mois} & \textbf{Par an} \\
+\midrule
+Nom de domaine \saisir{.com} & --- & 10 à 15 \$ \\
+Hébergement du site (Render, offre \champ{Starter}) & 7 \$ & 84 \$ \\
+Base de données (Render PostgreSQL, offre \champ{Basic}) & 6 \$ & 72 \$ \\
+Stockage de la base (au-delà du forfait) & $\approx$ 0,30 \$ & $\approx$ 4 \$ \\
+\midrule
+\textbf{Total} & \textbf{$\approx$ 13 \$} & \textbf{$\approx$ 175 \$} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Environ \textbf{175 dollars la première année}, puis autant les années
+suivantes. Les prix sont ceux constatés en 2026 ; vérifiez-les sur
+\lien{https://render.com/pricing}{render.com/pricing} avant de payer.
+
+\begin{attention}
+\textbf{Ne restez pas sur l'offre gratuite de Render.} La base de données
+gratuite est \textbf{effacée au bout de 30 jours}. Tout disparaît : articles,
+photos, commandes, clients, comptes. L'offre gratuite sert à essayer, pas à
+tenir une boutique.
+\end{attention}
+
+\subsection{Ce qu'il faut avoir sous la main}
+
+\begin{itemize}
+  \item Une adresse email à vous, que vous consultez vraiment.
+  \item Une \textbf{carte bancaire Visa ou Mastercard} acceptée à
+        l'international, ou un compte PayPal alimenté.
+  \item Un ordinateur (pas un téléphone : certaines pages sont trop denses).
+  \item Une heure au calme.
+\end{itemize}
+
+\begin{conseil}
+\textbf{Si vous n'avez pas de carte internationale.} Deux solutions courantes :
+une carte prépayée virtuelle (proposée par plusieurs banques et applications de
+transfert), ou demander à un proche disposant d'une carte de payer pour vous.
+Dans ce dernier cas, \textbf{créez quand même les comptes à votre nom et avec
+votre email} : seule la carte est empruntée. Les comptes doivent rester les
+vôtres.
+\end{conseil}
+
+\subsection{Les mots que vous allez croiser}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Mot} & \textbf{Ce que ça veut dire} \\
+\midrule
+Domaine & L'adresse du site : \saisir{filsnaturel.com}. \\
+Registrar & L'entreprise chez qui on achète le domaine. \\
+DNS & L'annuaire qui relie l'adresse à l'ordinateur. C'est ce qu'on règle à l'étape~6. \\
+Enregistrement A & Une ligne de l'annuaire qui donne le numéro (l'IP) de l'ordinateur. \\
+Enregistrement CNAME & Une ligne qui dit « cette adresse est un autre nom pour celle-là ». \\
+HTTPS / SSL & Le cadenas dans le navigateur. Render s'en occupe, gratuitement. \\
+Déploiement & L'opération qui met la dernière version du site en ligne. \\
+Variable d'environnement & Un réglage secret donné au site, comme un mot de passe. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% ==================================================================
+\section{Étape 1 — Choisir le nom de domaine}
+
+\subsection{Comment choisir}
+
+Le nom sera dit au téléphone, écrit sur une carte, tapé de mémoire. Donc :
+
+\begin{itemize}
+  \item \textbf{Court}. \saisir{filsnaturel.com} vaut mieux que \saisir{filsnatureltechcomhaiti.com}.
+  \item \textbf{Sans tiret ni chiffre}. « Tiret du six » au téléphone, c'est perdu d'avance.
+  \item \textbf{Facile à épeler} pour quelqu'un qui l'entend pour la première fois.
+  \item \textbf{En \saisir{.com}} de préférence : c'est ce que les gens tapent par réflexe.
+\end{itemize}
+
+Quelques pistes à tester :
+
+\begin{itemize}
+  \item \saisir{filsnaturel.com}
+  \item \saisir{fntc.com}
+  \item \saisir{fntchaiti.com}
+  \item \saisir{filsnaturelhaiti.com}
+\end{itemize}
+
+\begin{conseil}
+Le \saisir{.ht} est le domaine d'Haïti. Il est plus cher, plus long à obtenir,
+et beaucoup de gens tapent \saisir{.com} par habitude. Prenez un \saisir{.com}.
+\end{conseil}
+
+\subsection{Vérifier qu'il est libre}
+
+Allez sur \lien{https://www.namecheap.com}{namecheap.com}, tapez le nom voulu
+dans la barre de recherche, appuyez sur Entrée. Le site répond \champ{available}
+(libre) ou \champ{taken} (déjà pris). S'il est pris, essayez une variante.
+
+\begin{attention}
+Ne payez pas les extras proposés à la volée : \champ{hosting},
+\champ{email hosting}, \champ{SSL certificate}, \champ{Premium DNS}. Vous n'en
+avez besoin d'aucun. L'hébergement, c'est Render ; le certificat SSL, Render le
+donne gratuitement.
+\end{attention}
+
+% ==================================================================
+\section{Étape 2 — Acheter le domaine}
+
+\subsection{Où l'acheter}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lXr@{}}
+\toprule
+\textbf{Vendeur} & \textbf{Pourquoi} & \textbf{Prix \saisir{.com}} \\
+\midrule
+\lien{https://www.namecheap.com}{Namecheap} & Le plus simple pour un débutant. Accepte PayPal. Vie privée incluse. & 12 à 15 \$/an \\
+\lien{https://www.cloudflare.com/products/registrar/}{Cloudflare} & Le moins cher (prix coûtant, aucune marge). Interface plus austère. & 10 à 11 \$/an \\
+\lien{https://www.ovhcloud.com}{OVH} & Support en français, facturation en euros. & 12 à 15 \$/an \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Recommandation : Namecheap}, pour une première fois. La suite du guide
+le prend en exemple ; les autres fonctionnent pareil, avec d'autres mots.
+
+\begin{attention}
+Méfiez-vous des offres « \saisir{0,99 \$} la première année ». Le renouvellement
+grimpe souvent à 20 ou 30 \$. Regardez toujours le prix de \textbf{renouvellement},
+pas celui de la première année.
+\end{attention}
+
+\subsection{Acheter, pas à pas}
+
+\begin{etape}
+\textbf{Sur \lien{https://www.namecheap.com}{namecheap.com}}
+\end{etape}
+
+\begin{enumerate}
+  \item En haut à droite, \bouton{Sign Up} : créez un compte avec votre email.
+        Notez bien le mot de passe, vous en aurez besoin chaque année.
+  \item Cherchez votre nom de domaine, puis \bouton{Add to Cart}.
+  \item Cliquez sur \bouton{Checkout}.
+  \item Sur la page du panier, réglez :
+  \begin{itemize}
+    \item \champ{Domain Registration} : \textbf{1 an} suffit (ou 2 ans si vous
+          préférez ne pas y penser).
+    \item \champ{Auto-Renew} : \textbf{activé}. Sans cela, le domaine expire et
+          quelqu'un d'autre peut le prendre.
+    \item \champ{Domain Privacy} (WithheldForPrivacy) : \textbf{activé}. C'est
+          gratuit chez Namecheap et ça cache votre adresse personnelle des
+          annuaires publics.
+    \item Tout le reste : \textbf{décoché}.
+  \end{itemize}
+  \item \bouton{Confirm Order}, puis payez par carte ou PayPal.
+  \item Ouvrez l'email de confirmation et \textbf{cliquez sur le lien de
+        vérification}. Sans cette validation, le domaine est suspendu au bout de
+        quelques jours.
+\end{enumerate}
+
+\begin{conseil}
+\textbf{Notez tout de suite} : l'adresse email du compte Namecheap, le mot de
+passe, le nom de domaine exact, la date d'achat. La fiche du
+chapitre~\ref{sec:fiche} est faite pour ça.
+\end{conseil}
+
+% ==================================================================
+\section{Étape 3 — Créer le compte d'hébergement}
+
+\begin{etape}
+\textbf{Sur \lien{https://render.com}{render.com}}
+\end{etape}
+
+\begin{enumerate}
+  \item \bouton{Get Started} ou \bouton{Sign Up}.
+  \item Choisissez \bouton{Sign up with GitHub} : c'est là qu'est rangé le code
+        du site, et cette liaison évite bien des manipulations.
+  \item Si vous n'avez pas de compte GitHub, créez-le d'abord sur
+        \lien{https://github.com}{github.com} — c'est gratuit — puis revenez.
+  \item GitHub demande d'autoriser Render à lire vos dépôts : acceptez.
+  \item Confirmez votre adresse email en cliquant le lien reçu.
+\end{enumerate}
+
+\begin{attention}
+Le compte Render doit être créé \textbf{à votre nom et avec votre email}. C'est
+lui qui détient le site et la base. Ne le laissez pas au nom d'un tiers.
+\end{attention}
+
+% ==================================================================
+\section{Étape 4 — Créer la base de données}
+
+On crée la base \textbf{avant} le site : le site a besoin de son adresse pour
+démarrer.
+
+\begin{etape}
+\textbf{Dans le tableau de bord Render}
+\end{etape}
+
+\begin{enumerate}
+  \item \bouton{New +} en haut à droite, puis \bouton{Postgres}.
+  \item \champ{Name} : \saisir{fntc-base} (ou ce que vous voulez).
+  \item \champ{Region} : choisissez \textbf{Ohio} ou \textbf{Virginia} — les
+        plus proches d'Haïti, donc les plus rapides.
+  \item \champ{PostgreSQL Version} : laissez la valeur proposée.
+  \item \champ{Instance Type} : choisissez \textbf{Basic-256mb}, à environ
+        \textbf{6 \$ par mois}. \textbf{Surtout pas \champ{Free}} : elle serait
+        effacée au bout de 30 jours.
+  \item \bouton{Create Database}. Render demande une carte bancaire si ce n'est
+        pas déjà fait : saisissez-la, elle servira aussi pour le site.
+  \item Attendez que le statut passe à \champ{Available} (une ou deux minutes).
+\end{enumerate}
+
+\subsection{Récupérer l'adresse de la base}
+
+Sur la page de la base, section \champ{Connections}, repérez la ligne
+\champ{Internal Database URL}. Cliquez sur l'icône de copie à côté.
+
+C'est un texte très long qui commence par \saisir{postgresql://}. \textbf{Collez-le
+tout de suite quelque part} — un fichier texte sur votre ordinateur — vous en
+avez besoin dans deux minutes.
+
+\begin{attention}
+Cette adresse est un \textbf{mot de passe déguisé} : elle donne un accès complet
+à toutes vos données. Ne l'envoyez jamais par message public, ne la publiez
+nulle part, ne la mettez pas dans un email à un inconnu.
+\end{attention}
+
+% ==================================================================
+\section{Étape 5 — Mettre le site en ligne}
+
+\begin{etape}
+\textbf{Dans le tableau de bord Render}
+\end{etape}
+
+\begin{enumerate}
+  \item \bouton{New +}, puis \bouton{Web Service}.
+  \item Render affiche vos dépôts GitHub. Choisissez
+        \saisir{Fils-NAturel-Tech-com} et cliquez \bouton{Connect}.
+  \item Remplissez la page de configuration :
+\end{enumerate}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Champ} & \textbf{Ce qu'il faut mettre} \\
+\midrule
+\champ{Name} & \saisir{fntc} — ce nom apparaîtra dans l'adresse temporaire. \\
+\champ{Region} & \textbf{La même que la base} (Ohio ou Virginia). C'est important. \\
+\champ{Branch} & \saisir{main} \\
+\champ{Runtime} & \saisir{Node} \\
+\champ{Build Command} & \saisir{npm ci -{}-include=dev \&\& npm run db:init \&\& npm run build} \\
+\champ{Start Command} & \saisir{npm run start} \\
+\champ{Instance Type} & \textbf{Starter}, environ 7 \$/mois. Pas \champ{Free} : le site s'endormirait. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Les deux réglages secrets}
+
+Toujours sur la même page, section \champ{Environment Variables}, cliquez
+\bouton{Add Environment Variable} \textbf{deux fois} :
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Key (le nom)} & \textbf{Value (la valeur)} \\
+\midrule
+\saisir{DATABASE\_URL} & L'adresse copiée à l'étape 4, celle qui commence par \saisir{postgresql://} \\
+\saisir{SESSION\_SECRET} & Une longue suite de caractères au hasard, au moins 32 signes \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{conseil}
+Pour \saisir{SESSION\_SECRET}, tapez n'importe quoi de long et
+d'imprévisible, par exemple :
+\saisir{k7Qm2xVp9LbT4rWz8YnE3sHc6JdA5fGu}. Personne n'a besoin de s'en
+souvenir : ce n'est pas un mot de passe à taper, juste une clé que le site
+utilise pour signer les sessions. Ne la changez plus après coup, sinon tout le
+monde est déconnecté.
+\end{conseil}
+
+\begin{enumerate}\setcounter{enumi}{3}
+  \item \bouton{Create Web Service}.
+  \item Render construit le site. Le journal défile pendant \textbf{cinq à dix
+        minutes}. C'est normal et il n'y a rien à faire.
+  \item Quand le statut passe à \champ{Live} en vert, cliquez sur l'adresse
+        affichée en haut. Elle ressemble à ceci :
+
+        \begin{center}\ttfamily https://fntc.onrender.com\end{center}
+
+        \textbf{Le site est en ligne.}
+\end{enumerate}
+
+\subsection{Si le déploiement échoue}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Message dans le journal} & \textbf{Ce qu'il faut faire} \\
+\midrule
+\saisir{Environment variable not found: DATABASE\_URL} & La variable est mal écrite ou absente. Onglet \champ{Environment}, vérifiez le nom exactement : majuscules et tiret bas compris. \\
+\saisir{Cannot find module} & La commande de construction est incomplète. Onglet \champ{Settings}, recopiez la \champ{Build Command} du tableau ci-dessus. \\
+\saisir{Build failed} sans autre indice & Onglet \champ{Manual Deploy}, puis \bouton{Clear build cache \& deploy}. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% ==================================================================
+\section{Étape 6 — Brancher le nom de domaine}
+
+Le site fonctionne, mais à une adresse en \saisir{.onrender.com}. On y met
+maintenant le vrai nom.
+
+\subsection{Côté Render : déclarer le domaine}
+
+\begin{enumerate}
+  \item Ouvrez votre service, onglet \champ{Settings}, section
+        \champ{Custom Domains}.
+  \item \bouton{Add Custom Domain}. Tapez \saisir{filsnaturel.com}
+        (votre domaine, sans \saisir{https://} ni \saisir{www}). Validez.
+  \item Recommencez avec \saisir{www.filsnaturel.com}.
+  \item Render affiche alors un tableau avec les valeurs à recopier. \textbf{Ne
+        fermez pas cette page} : gardez-la ouverte dans un onglet.
+\end{enumerate}
+
+Ce tableau ressemble à ceci — \textbf{vos valeurs seront différentes,
+recopiez les vôtres} :
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}llX@{}}
+\toprule
+\textbf{Type} & \textbf{Nom} & \textbf{Valeur} \\
+\midrule
+A & \saisir{@} & \saisir{216.24.57.1} (le numéro donné par Render) \\
+CNAME & \saisir{www} & \saisir{fntc.onrender.com} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Côté Namecheap : remplir l'annuaire}
+
+\begin{enumerate}
+  \item Connectez-vous sur \lien{https://www.namecheap.com}{namecheap.com}.
+  \item Menu \champ{Domain List}, puis \bouton{Manage} en face de votre domaine.
+  \item Onglet \champ{Advanced DNS}.
+  \item Supprimez les lignes déjà présentes qui pointent vers une page
+        d'attente Namecheap : celles nommées \saisir{@} ou \saisir{www} de type
+        \champ{URL Redirect} ou \champ{CNAME} vers \saisir{parkingpage}.
+        Utilisez l'icône de corbeille.
+  \item \bouton{Add New Record}, puis créez la première ligne :
+  \begin{itemize}
+    \item \champ{Type} : \saisir{A Record}
+    \item \champ{Host} : \saisir{@}
+    \item \champ{Value} : le numéro donné par Render
+    \item \champ{TTL} : \saisir{Automatic}
+  \end{itemize}
+  \item \bouton{Add New Record} de nouveau, pour la deuxième ligne :
+  \begin{itemize}
+    \item \champ{Type} : \saisir{CNAME Record}
+    \item \champ{Host} : \saisir{www}
+    \item \champ{Value} : \saisir{fntc.onrender.com} (l'adresse donnée par Render)
+    \item \champ{TTL} : \saisir{Automatic}
+  \end{itemize}
+  \item Cliquez sur la coche verte pour enregistrer chaque ligne.
+\end{enumerate}
+
+\subsection{Attendre, puis vérifier}
+
+Retournez sur la page Render et cliquez \bouton{Verify}. Deux cas :
+
+\begin{itemize}
+  \item \textbf{Verified} en vert : c'est fait.
+  \item \textbf{Pending} : l'annuaire mondial n'a pas encore été mis à jour.
+        C'est normal. Attendez, puis recliquez \bouton{Verify}. Comptez dix
+        minutes en général, jusqu'à 24 heures dans le pire des cas.
+\end{itemize}
+
+Une fois vérifié, Render crée tout seul le certificat HTTPS. Quelques minutes
+plus tard, \saisir{https://filsnaturel.com} affiche le site avec le cadenas.
+\textbf{Il n'y a rien à payer ni à renouveler pour ce cadenas.}
+
+\begin{conseil}
+L'ancienne adresse en \saisir{.onrender.com} continue de fonctionner. Elle ne
+gêne pas : plus personne n'a besoin de la connaître. Communiquez uniquement le
+nouveau nom.
+\end{conseil}
+
+% ==================================================================
+\section{Étape 7 — Vérifier que tout marche}
+
+Ouvrez \saisir{https://votredomaine.com} et vérifiez, dans l'ordre :
+
+\begin{enumerate}
+  \item Le cadenas apparaît dans la barre d'adresse.
+  \item La page d'accueil s'affiche avec les images.
+  \item Le catalogue s'ouvre, les filtres par rayon fonctionnent.
+  \item Une fiche produit s'ouvre, on peut taper une quantité et l'ajouter au panier.
+  \item Le panier affiche la bonne quantité et le bon total.
+  \item Refaites ces cinq points \textbf{sur un téléphone}.
+  \item \saisir{https://votredomaine.com/admin} affiche la page de connexion.
+  \item Vous vous connectez, \textbf{et vous changez immédiatement le mot de
+        passe} dans \champ{Administration $\rightarrow$ Comptes admin}.
+\end{enumerate}
+
+\begin{attention}
+Le mot de passe fourni au départ est un mot de passe de livraison. Il a
+circulé, ne serait-ce que dans un message. Changez-le à la première connexion,
+sans exception.
+\end{attention}
+
+% ==================================================================
+\section{Étape 8 — Protéger les données}
+
+C'est l'étape que tout le monde saute, et c'est celle qu'on regrette.
+
+\begin{enumerate}
+  \item Dans Render, ouvrez la base, onglet \champ{Backups}. Vérifiez que les
+        sauvegardes automatiques sont actives sur votre offre.
+  \item \textbf{Une fois par mois}, faites une copie qui ne vive pas chez
+        Render : bouton de téléchargement de la sauvegarde, puis rangez le
+        fichier sur votre ordinateur \textbf{et} sur une clé USB ou un espace
+        en ligne.
+\end{enumerate}
+
+\begin{conseil}
+Une sauvegarde stockée uniquement chez l'hébergeur ne protège pas d'une erreur
+de manipulation ni d'un compte fermé. Une copie chez vous, tous les mois, suffit
+à dormir tranquille.
+\end{conseil}
+
+% ==================================================================
+\section{Ce qu'il faut me transmettre}
+\label{sec:fiche}
+
+Remplissez cette fiche au fur et à mesure, et transmettez-la-moi. Elle me permet
+de dépanner sans vous déranger. \textbf{Ne l'envoyez pas par message public} :
+remettez-la en main propre, ou par un moyen privé.
+
+\vspace{0.6em}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Le nom de domaine}}\\
+\midrule
+Nom exact du domaine & \aremplir \\
+Acheté chez (Namecheap, Cloudflare\ldots) & \aremplir \\
+Email du compte & \aremplir \\
+Date d'achat & \aremplir \\
+Renouvellement automatique activé ? & \aremplir \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{L'hébergement Render}}\\
+\midrule
+Email du compte Render & \aremplir \\
+Adresse temporaire (\saisir{...onrender.com}) & \aremplir \\
+Nom du service web & \aremplir \\
+Nom de la base de données & \aremplir \\
+Région choisie & \aremplir \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{L'administration du site}}\\
+\midrule
+Identifiant administrateur & \aremplir \\
+Mot de passe changé le & \aremplir \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Les dates à retenir}}\\
+\midrule
+Renouvellement du domaine (chaque année) & \aremplir \\
+Jour de prélèvement Render (chaque mois) & \aremplir \\
+Dernière sauvegarde téléchargée le & \aremplir \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{attention}
+\textbf{Ne me transmettez jamais} : le mot de passe de votre compte Render, le
+mot de passe de votre compte Namecheap, votre numéro de carte bancaire, ni
+l'adresse \saisir{DATABASE\_URL} complète. Rien de tout cela n'est nécessaire
+pour vous dépanner. Si quelqu'un vous les réclame, c'est une tentative
+d'escroquerie.
+\end{attention}
+
+\begin{conseil}
+Pour me donner accès sans partager de mot de passe : dans Render, section
+\champ{Members} ou \champ{Team}, invitez mon adresse email. L'accès se retire
+d'un clic quand il n'est plus utile.
+\end{conseil}
+
+% ==================================================================
+\section{Vivre avec, mois après mois}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Quand} & \textbf{Quoi} \\
+\midrule
+Chaque mois & Render prélève environ 13 \$. Vérifiez que le paiement est passé : une carte expirée coupe le site. \\
+Chaque mois & Téléchargez une sauvegarde de la base et rangez-la chez vous. \\
+Chaque année & Le domaine se renouvelle. Si votre carte a changé, mettez-la à jour chez le registrar \textbf{avant} l'échéance. \\
+Quand le site évolue & Un \saisir{git push} sur GitHub déclenche un nouveau déploiement tout seul. Vous n'avez rien à faire. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{attention}
+\textbf{Le danger le plus courant n'est pas technique : c'est une carte
+expirée.} Un domaine non renouvelé peut être racheté par n'importe qui, et se
+récupérer coûte alors très cher — quand c'est encore possible. Surveillez les
+emails de Namecheap et de Render, ils préviennent à l'avance.
+\end{attention}
+
+% ==================================================================
+\section{Si quelque chose ne va pas}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+\textbf{Symptôme} & \textbf{Que faire} \\
+\midrule
+Le domaine affiche « site introuvable » & L'annuaire n'est pas encore à jour. Attendez, jusqu'à 24 h. Vérifiez ensuite que les deux lignes DNS sont exactement celles données par Render. \\
+Le domaine affiche une page de publicité Namecheap & Il reste une ancienne ligne \champ{URL Redirect} ou \champ{parkingpage} dans \champ{Advanced DNS}. Supprimez-la. \\
+Pas de cadenas, « connexion non sécurisée » & Le certificat n'est pas encore émis. Attendez quinze minutes après la vérification du domaine. \\
+Le site met vingt secondes à s'ouvrir & Vous êtes resté sur l'offre gratuite. Passez le service en \champ{Starter}. \\
+Le site affiche une erreur serveur & Onglet \champ{Logs} du service : la dernière ligne rouge dit pourquoi. Envoyez-la-moi telle quelle. \\
+Le site a disparu, la base est vide & L'offre gratuite de base de données a expiré. C'est irréversible sans sauvegarde. \\
+Plus rien ne répond, aucune erreur & Vérifiez le paiement : une carte refusée suspend le service. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Où demander de l'aide}
+
+\begin{itemize}
+  \item Render : \lien{https://render.com/docs}{render.com/docs} et le chat de support depuis le tableau de bord.
+  \item Namecheap : chat en direct 24\,h/24 depuis le site, en anglais.
+  \item Pour tout ce qui touche au site lui-même : passez par moi, avec la
+        ligne d'erreur exacte et une capture d'écran.
+\end{itemize}
+
+\vspace{1.2cm}
+\begin{center}
+{\color{sig}\rule{3cm}{1.5pt}}\par
+\vspace{0.4cm}
+{\color{encre2}\small Fils Naturel Tech-Com — guide de mise en ligne}
+\end{center}
+
+\end{document}
