@@ -227,6 +227,27 @@ table.admin-tableau { width: 100%; border-collapse: collapse; font-size: 0.88rem
 
 .admin-formulaire .large { grid-column: 1 / -1; }
 
+.aide-champ { font-size: 0.78rem; color: var(--ink-3); line-height: 1.45; }
+
+/* Bilan : choix de la période, comparaisons, aperçu d'un achat. */
+.onglets-periode { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.4rem; }
+.puce-periode {
+  padding: 0.6rem 1.1rem; border-radius: 99px; font-size: 0.82rem; color: var(--ink-2);
+  background: var(--bone-2); white-space: nowrap; min-height: 40px; display: inline-flex; align-items: center;
+}
+.puce-periode:hover { color: var(--ink); }
+.puce-periode.actif { background: var(--deep); color: var(--on-deep); }
+
+.evolution-haut { color: #3f8c5e; }
+.evolution-bas { color: var(--sig); }
+
+.recap-achat {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem;
+  padding: 1rem 1.1rem; border-radius: var(--r-s); background: var(--bone-3);
+}
+.recap-achat > div { display: flex; flex-direction: column; gap: 0.2rem; }
+.recap-achat b { font-family: var(--mono); font-size: 1.05rem; }
+
 /* Les gestes d'une commande : annuler, expédier, marquer reçue. */
 .actions-commande { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .actions-commande .btn { width: 100%; }

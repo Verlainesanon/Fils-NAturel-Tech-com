@@ -19,13 +19,20 @@ export default async function LayoutAdmin({ children }: { children: React.ReactN
   ])
 
   const groupes: GroupeMenu[] = [
-    { groupe: 'Pilotage', entrees: [{ href: '/admin', libelle: 'Tableau de bord' }] },
+    {
+      groupe: 'Pilotage',
+      entrees: [
+        { href: '/admin', libelle: 'Tableau de bord' },
+        { href: '/admin/bilan', libelle: 'Bilan et bénéfices' },
+      ],
+    },
     {
       groupe: 'Catalogue',
       entrees: [
         { href: '/admin/produits', libelle: 'Produits' },
         { href: '/admin/categories', libelle: 'Catégories' },
         { href: '/admin/stock', libelle: 'Stock et ruptures' },
+        { href: '/admin/achats', libelle: 'Achats' },
         { href: '/admin/promos', libelle: 'Promotions' },
       ],
     },

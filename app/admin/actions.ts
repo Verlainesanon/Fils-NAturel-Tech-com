@@ -11,6 +11,7 @@ import { slugifier, prixEffectif } from '@/lib/format'
 import { estRole } from '@/lib/roles'
 import { DEVISES_DEFAUT, lireDevises, deviseDeBase } from '@/lib/devises'
 import { resoudreStock, totalLignes } from '@/lib/stock'
+import { resoudreAchat, coutMoyenPondere, type ModeAchat } from '@/lib/bilan'
 
 const texte = (f: FormData, cle: string) => String(f.get(cle) ?? '').trim()
 const nombre = (f: FormData, cle: string, defaut = 0) => {
@@ -68,6 +69,7 @@ export async function enregistrerProduit(formData: FormData) {
     descriptionCourte: texte(formData, 'descriptionCourte'),
     description: texte(formData, 'description'),
     prixCentimes: centimes(formData, 'prix'),
+    coutCentimes: centimes(formData, 'cout'),
     promoCentimes: texte(formData, 'promo') ? centimes(formData, 'promo') : null,
     promoDebut: dateOuNull(formData, 'promoDebut'),
     promoFin: dateOuNull(formData, 'promoFin'),
@@ -208,6 +210,104 @@ export async function ajusterStock(formData: FormData) {
   revalidatePath('/boutique')
 }
 
+// ------------------------------------------------------------------ achats
+
+/**
+ * Enregistre un approvisionnement : le stock monte, le coût unitaire moyen du
+ * produit est recalculé, et la dépense est datée pour le bilan.
+ */
+export async function enregistrerAchat(formData: FormData) {
+  const admin = await exigerRole('vendeur')
+  const produitId = texte(formData, 'produitId')
+  if (!produitId) return { erreur: 'Choisissez un produit.' }
+
+  const produit = await prisma.product.findUnique({ where: { id: produitId } })
+  if (!produit) return { erreur: 'Produit introuvable.' }
+
+  const mode: ModeAchat = texte(formData, 'mode') === 'lot' ? 'lot' : 'unite'
+  const resultat = resoudreAchat({
+    mode,
+    nombre: nombre(formData, 'nombre'),
+    quantiteParLot: nombre(formData, 'quantiteParLot', 1),
+    prix: centimes(formData, 'prix'),
+    prixPour: texte(formData, 'prixPour') === 'piece' ? 'piece' : 'total',
+  })
+  if ('erreur' in resultat) return resultat
+
+  const { quantite, prixTotalCentimes, coutUnitaireCentimes } = resultat
+  const stockApres = produit.stock + quantite
+  const coutMoyen = coutMoyenPondere(produit.stock, produit.coutCentimes, quantite, coutUnitaireCentimes)
+  const achteLe = dateOuNull(formData, 'achteLe') ?? new Date()
+
+  await prisma.purchase.create({
+    data: {
+      produitId,
+      mode,
+      nombre: nombre(formData, 'nombre'),
+      quantiteParLot: mode === 'lot' ? nombre(formData, 'quantiteParLot', 1) : 1,
+      quantite,
+      prixTotalCentimes,
+      coutUnitaireCentimes,
+      fournisseur: texte(formData, 'fournisseur') || null,
+      note: texte(formData, 'note') || null,
+      achteLe,
+      auteur: admin.nom,
+    },
+  })
+
+  await prisma.product.update({
+    where: { id: produitId },
+    data: { stock: stockApres, coutCentimes: coutMoyen },
+  })
+
+  await prisma.stockMovement.create({
+    data: {
+      produitId,
+      variation: quantite,
+      stockApres,
+      motif: 'reception',
+      note: texte(formData, 'fournisseur') ? `Achat — ${texte(formData, 'fournisseur')}` : 'Achat',
+      auteur: admin.nom,
+    },
+  })
+
+  await journaliser(admin.nom, 'stock', `Product#${produitId}`, `achat +${quantite}`)
+  revalidatePath('/admin/achats')
+  revalidatePath('/admin/bilan')
+  revalidatePath('/admin/stock')
+  revalidatePath('/boutique')
+}
+
+export async function supprimerAchat(formData: FormData) {
+  const admin = await exigerRole('gestionnaire')
+  const id = texte(formData, 'id')
+  const achat = await prisma.purchase.findUnique({ where: { id } })
+  if (!achat) return { erreur: 'Achat introuvable.' }
+
+  // Une erreur de saisie doit pouvoir se corriger : le stock redescend d'autant.
+  const produit = await prisma.product.findUnique({ where: { id: achat.produitId } })
+  if (produit) {
+    const stockApres = Math.max(0, produit.stock - achat.quantite)
+    await prisma.product.update({ where: { id: produit.id }, data: { stock: stockApres } })
+    await prisma.stockMovement.create({
+      data: {
+        produitId: produit.id,
+        variation: stockApres - produit.stock,
+        stockApres,
+        motif: 'correction',
+        note: 'Achat supprimé',
+        auteur: admin.nom,
+      },
+    })
+  }
+
+  await prisma.purchase.delete({ where: { id } })
+  await journaliser(admin.nom, 'suppression', `Purchase#${id}`, `−${achat.quantite}`)
+  revalidatePath('/admin/achats')
+  revalidatePath('/admin/bilan')
+  revalidatePath('/admin/stock')
+}
+
 // --------------------------------------------------------------- promotions
 
 export async function enregistrerPromo(formData: FormData) {
@@ -296,6 +396,7 @@ export async function creerCommandeAdmin(formData: FormData) {
     nomProduit: string
     referenceProduit: string | null
     prixCentimes: number
+    coutCentimes: number
     quantite: number
   }[] = []
   for (const demande of lignesDemandees) {
@@ -310,6 +411,8 @@ export async function creerCommandeAdmin(formData: FormData) {
       nomProduit: produit.nom,
       referenceProduit: produit.reference,
       prixCentimes: centimes,
+      // Le coût est figé ici : un achat futur ne doit pas réécrire la marge.
+      coutCentimes: produit.coutCentimes,
       quantite: demande.quantite,
     })
   }

@@ -35,6 +35,7 @@ model Product {
   descriptionCourte String  @default("")
   description      String
   prixCentimes     Int
+  coutCentimes     Int      @default(0) // prix d'achat unitaire courant, moyenne pondérée des achats
   promoCentimes    Int?
   promoDebut       DateTime?
   promoFin         DateTime?
@@ -51,12 +52,34 @@ model Product {
   categorie        Category @relation(fields: [categorieId], references: [id])
   lignes           OrderItem[]
   mouvements       StockMovement[]
+  achats           Purchase[]
   creeLe           DateTime @default(now())
   majLe            DateTime @updatedAt
   supprimeLe       DateTime?
 
   @@index([categorieId])
   @@index([statut])
+}
+
+// Un approvisionnement : ce qui est entré en stock et ce qu'il a coûté.
+model Purchase {
+  id               String   @id @default(cuid())
+  produitId        String
+  produit          Product  @relation(fields: [produitId], references: [id])
+  mode             String   @default("unite") // unite | lot
+  nombre           Int      // nombre d'unités si mode=unite, nombre de lots si mode=lot
+  quantiteParLot   Int      @default(1)
+  quantite         Int      // unités totales entrées en stock
+  prixTotalCentimes Int     // ce qui a été payé en tout
+  coutUnitaireCentimes Int  // prixTotal / quantite, figé
+  fournisseur      String?
+  note             String?
+  achteLe          DateTime @default(now())
+  auteur           String?
+  creeLe           DateTime @default(now())
+
+  @@index([produitId])
+  @@index([achteLe])
 }
 
 model StockMovement {
@@ -167,6 +190,7 @@ model OrderItem {
   nomProduit     String  // figé au moment de l'achat
   referenceProduit String?
   prixCentimes   Int     // figé au moment de l'achat
+  coutCentimes   Int     @default(0) // prix d'achat unitaire figé, pour la marge
   quantite       Int
 
   @@index([commandeId])

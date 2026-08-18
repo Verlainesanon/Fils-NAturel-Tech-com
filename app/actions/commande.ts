@@ -96,6 +96,7 @@ export async function passerCommande(formData: FormData) {
             nomProduit: l.nom,
             referenceProduit: l.reference,
             prixCentimes: l.prixCentimes,
+            coutCentimes: l.coutCentimes,
             quantite: l.quantite,
           })),
         },

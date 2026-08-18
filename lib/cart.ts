@@ -15,6 +15,8 @@ export type LigneDetaillee = {
   image: string | null
   prixCentimes: number
   prixBarreCentimes: number | null
+  /** Prix d'achat unitaire du moment, figé sur la ligne de commande. */
+  coutCentimes: number
   quantite: number
   stock: number
   totalCentimes: number
@@ -93,6 +95,7 @@ export async function detaillerPanier(): Promise<PanierDetaille> {
       image: images[0] ?? null,
       prixCentimes: centimes,
       prixBarreCentimes: enPromo ? produit.prixCentimes : null,
+      coutCentimes: produit.coutCentimes,
       quantite,
       stock: produit.stock,
       totalCentimes: centimes * quantite,

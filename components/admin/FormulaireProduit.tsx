@@ -79,7 +79,15 @@ export default function FormulaireProduit({
       <h2>Prix et stock</h2>
 
       <div className="champ">
-        <label htmlFor="prix">Prix ({symbole})</label>
+        <label htmlFor="cout">Prix d’achat, l’unité ({symbole})</label>
+        <input id="cout" name="cout" inputMode="decimal" defaultValue={enEuros(produit?.coutCentimes)} />
+        <p className="aide-champ">
+          Ce que l’article vous coûte. Recalculé tout seul à chaque achat enregistré.
+        </p>
+      </div>
+
+      <div className="champ">
+        <label htmlFor="prix">Prix de vente ({symbole})</label>
         <input id="prix" name="prix" inputMode="decimal" defaultValue={enEuros(produit?.prixCentimes)} required />
       </div>
 
